@@ -14,3 +14,9 @@
 Route::get('/', 'HomeController@showWelcome');
 Route::get('/login', 'LoginController@getLogin');
 Route::post('/login', 'LoginController@postLogin');
+
+Route::group(array('prefix'=>'article'), function(){
+    Route::get('/show/{id}', 'ArticleController@show');
+    Route::get('/create/{id?}', 'ArticleController@getCreate');
+    Route::post('/create', 'ArticleController@postCreate');
+});
