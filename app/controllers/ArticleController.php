@@ -20,10 +20,25 @@ class ArticleController extends BaseController {
         if (Request::ajax()) {
             $input = Input::all();
             $input['user_id'] = 1;
+            $input['state'] = Article::DRAFT;
             $article = Article::create($input);
             $article->save();
             return Response::json($article->getErrors());
         }
+    }
+
+    public function showHome() {
+        $articles = Article::orderBy('created_at')->take(5)->get();
+        return View::make('articles.show', array(
+                    'articles' => $articles
+        ));
+    }
+    
+    public function showDrafts() {
+        $drafts = Article::where('state', '=', Article::DRAFT)->orderBy('created_at')->get();
+        return View::make('articles.draft', array(
+                    'drafts' => $drafts
+        ));
     }
 
 }

@@ -4,7 +4,9 @@ class Article extends Eloquent {
 
     use \Watson\Validating\ValidatingTrait;
 
-    const ACCEPTED = 0;
+    const DRAFT = 1;
+    const SENT = 2;
+    const ACCEPTED = 3;
 
     protected $table = 'articles';
     protected $fillable = array(
