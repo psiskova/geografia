@@ -57,11 +57,9 @@
         <label for="section_id" class="col-md-3 control-label">Rubrika</label>
         <div class="col-md-9">
             <select class="form-control" id="section_id">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                @foreach(Section::all() as $section)
+                <option value="{{ $section->id }}">{{{ $section->name }}}</option>
+                @endforeach
             </select>
         </div>
     </div>
