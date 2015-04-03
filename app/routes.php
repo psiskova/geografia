@@ -11,14 +11,21 @@
   |
  */
 
-Route::get('/', 'HomeController@showWelcome');
 Route::get('/', 'ArticleController@showHome');
 Route::get('/login', 'LoginController@getLogin');
 Route::post('/login', 'LoginController@postLogin');
 
-Route::group(array('prefix'=>'article'), function(){
+Route::group(array('prefix' => 'section'), function() {
+    Route::get('/{id}', 'ArticleController@showSection');
+});
+
+Route::group(array('prefix' => 'article'), function() {
     Route::get('/show/{id}', 'ArticleController@show');
     Route::get('/create/{id?}', 'ArticleController@getCreate');
     Route::get('/drafts', 'ArticleController@showDrafts');
+    Route::get('/sent/{id?}', 'ArticleController@showSentArticles');
+    Route::get('/accepted/{id?}', 'ArticleController@showAcceptedArticles');
+    Route::get('/manage/articles', 'ArticleController@showArticleManagement');
+    Route::get('/manage/sections', 'ArticleController@showSectionManagement');
     Route::post('/create', 'ArticleController@postCreate');
 });

@@ -73,8 +73,9 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-3 col-md-9">
+            <button type="button" class="btn btn-primary pull-right" style="margin-left: 10px">Odošli</button>
             <button id="save" class="btn btn-primary ladda-button pull-right" data-style="expand-left">
-                <span class="ladda-label">expand-left</span>
+                <span class="ladda-label">Ulož</span>
             </button>
         </div>
     </div>

@@ -29,7 +29,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    {{ HTML::linkAction('HomeController@showWelcome', 'Domov', array(), array('class' => 'navbar-brand')) }}
+                    {{ HTML::linkAction('ArticleController@showHome', 'Domov', array(), array('class' => 'navbar-brand')) }}
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->

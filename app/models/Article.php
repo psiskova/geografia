@@ -27,6 +27,22 @@ class Article extends Eloquent {
     public function scopeAccepted($query) {
         return $query->where('state', '=', self::ACCEPTED);
     }
+    
+    public function scopeDraft($query) {
+        return $query->where('state', '=', self::DRAFT);
+    }
+    
+    public function scopeSent($query) {
+        return $query->where('state', '=', self::SENT);
+    }
+    
+    public function scopeArticleSection($query, $id) {
+        return $query->where('section_id', '=', $id);
+    }
+    
+    public function scopeArticleAuthor($query, $id) {
+        return $query->where('user_id', '=', $id);
+    }
 
     public function user() {
         return $this->hasOne('User', 'id', 'user_id');
