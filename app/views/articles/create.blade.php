@@ -40,6 +40,26 @@
             save();
             return false;
         });
+        
+        @if(isset($id) && $id !== null)
+        function loadArticle(){
+            alert('ahoj');
+            $.ajax({
+                'method': 'post',
+                'url': '{{ action("ArticleController@getArticle") }}',
+                'dataType': 'json',
+                'data': {
+                    'id':  {{ $id }},
+                },
+                'success': function (result) {
+                        $('#caption').val(result['caption']),
+                        $('#section_id').val(result['section_id']),
+                        $('#text').code(result['text'])
+                }
+            })
+        }
+        loadArticle()
+        @endif
 
     });
 </script>

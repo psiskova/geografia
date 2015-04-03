@@ -13,7 +13,9 @@ class ArticleController extends BaseController {
     }
 
     public function getCreate($id = null) {
-        return View::make('articles.create');
+        return View::make('articles.create', array(
+                    'id' => $id
+        ));
     }
 
     public function postCreate() {
@@ -24,6 +26,17 @@ class ArticleController extends BaseController {
             $article = Article::create($input);
             $article->save();
             return Response::json($article->getErrors());
+        }
+    }
+
+    public function getArticle() {
+        if (Request::ajax()) {
+            $article = Article::find(Input::all('id'));
+            $result = [];
+            $result['section_id'] = $article->section_id;
+            $result['caption'] = $article->caption;
+            $result['text'] = stripslashes($article->text);
+            return Response::json($result);
         }
     }
 

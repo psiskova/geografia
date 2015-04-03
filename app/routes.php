@@ -25,7 +25,11 @@ Route::group(array('prefix' => 'article'), function() {
     Route::get('/drafts', 'ArticleController@showDrafts');
     Route::get('/sent/{id?}', 'ArticleController@showSentArticles');
     Route::get('/accepted/{id?}', 'ArticleController@showAcceptedArticles');
-    Route::get('/manage/articles', 'ArticleController@showArticleManagement');
-    Route::get('/manage/sections', 'ArticleController@showSectionManagement');
     Route::post('/create', 'ArticleController@postCreate');
+    Route::post('/kebab', 'ArticleController@getArticle');
+});
+
+Route::group(array('prefix' => 'manage'), function() {
+    Route::get('/articles', 'ArticleController@showArticleManagement');
+    Route::get('/sections', 'ArticleController@showSectionManagement');
 });
