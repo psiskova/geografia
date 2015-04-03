@@ -43,7 +43,6 @@
         
         @if(isset($id) && $id !== null)
         function loadArticle(){
-            alert('ahoj');
             $.ajax({
                 'method': 'post',
                 'url': '{{ action("ArticleController@getArticle") }}',
@@ -54,7 +53,7 @@
                 'success': function (result) {
                         $('#caption').val(result['caption']),
                         $('#section_id').val(result['section_id']),
-                        $('#text').code(result['text'])
+                        $('.summernote').code(result['text'])
                 }
             })
         }

@@ -26,7 +26,7 @@ Route::group(array('prefix' => 'article'), function() {
     Route::get('/sent/{id?}', 'ArticleController@showSentArticles');
     Route::get('/accepted/{id?}', 'ArticleController@showAcceptedArticles');
     Route::post('/create', 'ArticleController@postCreate');
-    Route::post('/kebab', 'ArticleController@getArticle');
+    Route::post('/getArticle', 'ArticleController@getArticle');
 });
 
 Route::group(array('prefix' => 'manage'), function() {

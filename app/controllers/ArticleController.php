@@ -31,12 +31,8 @@ class ArticleController extends BaseController {
 
     public function getArticle() {
         if (Request::ajax()) {
-            $article = Article::find(Input::all('id'));
-            $result = [];
-            $result['section_id'] = $article->section_id;
-            $result['caption'] = $article->caption;
-            $result['text'] = stripslashes($article->text);
-            return Response::json($result);
+            $article = Article::find(Input::all('id'))[0];
+            return Response::json($article);
         }
     }
 
