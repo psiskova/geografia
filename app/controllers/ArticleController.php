@@ -131,7 +131,7 @@ class ArticleController extends BaseController {
             if (count(Review::where('article_id', '=', $input['article_id'])->get()) == 0) {
                 $review = Review::create($input);
             } else {
-                $review = Review::where('article_id', '=', $input['article_id']);
+                $review = Review::where('article_id', '=', $input['article_id'])->first();
                 $review->update($input);
             }
             $review->save();
