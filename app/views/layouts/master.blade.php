@@ -73,7 +73,10 @@
         </nav>
         <div class="container-fluid">
             @if(Session::has('error'))
-                <div class="alert alert-danger" role="alert">{{Session::get('error')}}</div>
+                <div class="alert alert-danger" role="alert">{{ Session::get('error') }}</div>
+            @endif
+            @if(Session::has('message'))
+                <div class="alert alert-success" role="alert">{{ Session::get('message') }}</div>
             @endif
             @yield('content')
         </div>    

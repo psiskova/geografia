@@ -11,19 +11,30 @@
     $(document).ready(function () {
         var l = Ladda.create(document.getElementById('save'));
         function save() {
+            var data =  {
+                'caption': $('#caption').val(),
+                'section_id': $('#section_id').val(),
+                'text': $('.summernote').code(),
+                'id': $('#id').val()
+            };
             $.ajax({
                 'method': 'post',
                 'url': '{{ action("ArticleController@postCreate") }}',
                 'dataType': 'json',
-                'data': {
-                    'caption': $('#caption').val(),
-                    'section_id': $('#section_id').val(),
-                    'text': $('.summernote').code()
-                },
+                'data': data,
                 'success': function (result) {
-                    for (var key in result) {
-                        $('#' + key).closest('.form-group').addClass('has-error');
+                    if (result.id){
+                        $('#id').val(result.id);
+                        $('#save').addClass('btn-success');
+                    }else{
+                        for (var key in result) {
+                            $('#' + key).closest('.form-group').addClass('has-error');
+                        }
+                        $('#save').addClass('btn-danger');
                     }
+                },
+                'error': function() {
+                    $('#save').addClass('btn-danger');
                 }
             }).always(function () {
                 l.stop();
@@ -36,9 +47,14 @@
 
         $('#save').on('click', function () {
             $('.has-error').removeClass('has-error');
+            $('#save').removeClass('btn-danger').removeClass('btn-success');
             l.start();
             save();
             return false;
+        });($('#id').val() === '' && $(this).addClass('btn-danger') && false) || 
+        
+        $('#send').on('click', function() {
+            return $('#id').val() !== ''; 
         });
         
         @if(isset($id) && $id !== null)
@@ -51,21 +67,21 @@
                     'id':  {{ $id }},
                 },
                 'success': function (result) {
-                        $('#caption').val(result['caption']),
-                        $('#section_id').val(result['section_id']),
-                        $('.summernote').code(result['text'])
+                    $('#caption').val(result['caption']);
+                    $('#section_id').val(result['section_id']);
+                    $('.summernote').code(result['text']);
                 }
             })
         }
         loadArticle()
         @endif
-
     });
 </script>
 @stop
 
 @section('middle')
-<form class="form-horizontal">
+{{ Form::open(array('action' => 'ArticleController@postSendArticle', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
+    <input type="hidden" value="{{$id or ''}}" id="id" name="id">
     <div class="form-group">
         <label for="caption" class="col-md-3 control-label">Nadpis</label>
         <div class="col-md-9">
@@ -92,11 +108,11 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-3 col-md-9">
-            <button type="button" class="btn btn-primary pull-right" style="margin-left: 10px">Odošli</button>
+            {{Form::submit('Odošli', array('class'=>'btn btn-primary pull-right', 'style'=>'margin-left: 10px', 'id'=>'send'))}}
             <button id="save" class="btn btn-primary ladda-button pull-right" data-style="expand-left">
                 <span class="ladda-label">Ulož</span>
             </button>
         </div>
     </div>
-</form>
+{{ Form::close() }}
 @stop

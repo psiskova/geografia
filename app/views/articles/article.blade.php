@@ -4,7 +4,7 @@
 <ul class="nav nav-pills nav-stacked">
     @if(in_array(Route::currentRouteAction(), ['ArticleController@showHome', 'ArticleController@show', 'ArticleController@showSection', 'HomeController@showWelcome'])) 
     @foreach(Section::all() as $section)
-    <li role="presentation">{{ HTML::linkAction('ArticleController@showSection', $section->name, array($section->id), array('class' => 'nav nav-pills nav-stacked')) }}</li>
+    {{ HTML::menuItem(['ArticleController@showSection'], $section->name, array($section->id)) }}
     @endforeach
     @else
     <li role="presentation">{{ HTML::linkAction('ArticleController@getCreate', 'Nový článok', array(), array('class' => 'nav nav-pills nav-stacked')) }}</li>

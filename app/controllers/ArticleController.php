@@ -23,10 +23,30 @@ class ArticleController extends BaseController {
             $input = Input::all();
             $input['user_id'] = 1;
             $input['state'] = Article::DRAFT;
-            $article = Article::create($input);
+            if (!$article = Article::find($input['id'])) {
+                $article = Article::create($input);
+            } else {
+                $article->update($input);
+            }
             $article->save();
-            return Response::json($article->getErrors());
+            if (count($article->getErrors()) > 0) {
+                $result = $article->getErrors();
+            } else {
+                $result = array(
+                    'id' => $article->id
+                );
+            }
+            return Response::json($result);
         }
+    }
+
+    public function postSendArticle() {
+        $input = Input::all();
+        $article = Article::find($input['id']);
+        $article->state = Article::SENT;
+        $article->save();
+        return Redirect::action('ArticleController@showSentArticles')
+                        ->with('message', 'Článok bol odoslaný na kontrolu');
     }
 
     public function getArticle() {
@@ -50,26 +70,28 @@ class ArticleController extends BaseController {
         ));
     }
 
-    public function showSentArticles($id = null) {
+    public function showSentArticles() {
         /* if (!$id) {
           $sentArticles = Article::sent()->orderBy('created_at', 'desc')->get();
           return View::make('articles.article_management', array(
           'sentArticles' => $sentArticles
           ));
           } */
+        $id = 1;
         $sentArticles = Article::sent()->articleAuthor($id)->orderBy('created_at', 'desc')->get();
         return View::make('articles.sent', array(
                     'sentArticles' => $sentArticles
         ));
     }
 
-    public function showAcceptedArticles($id = null) {
+    public function showAcceptedArticles() {
         /*  if (!$id) {
           $acceptedArticles = Article::accepted()->orderBy('created_at', 'desc')->get();
           return View::make('articles.article_management', array(
           'acceptedArticles' => $acceptedArticles
           ));
           } */
+        $id = 1;
         $acceptedArticles = Article::accepted()->articleAuthor($id)->orderBy('created_at', 'desc')->get();
         return View::make('articles.accepted', array(
                     'acceptedArticles' => $acceptedArticles
@@ -100,6 +122,23 @@ class ArticleController extends BaseController {
         return View::make('articles.section_management', array(
                     'sections' => $sections
         ));
+    }
+
+    public function postCreateReview() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            $input['user_id'] = 1;
+            if (count(Review::where('article_id', '=', $input['article_id'])->get()) == 0) {
+                $review = Review::create($input);
+            } else {
+                $review = Review::where('article_id', '=', $input['article_id']);
+                $review->update($input);
+            }
+            $review->save();
+            return Response::json(array(
+                        'result' => 'ok'
+            ));
+        }
     }
 
 }

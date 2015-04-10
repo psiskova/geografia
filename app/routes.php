@@ -23,10 +23,12 @@ Route::group(array('prefix' => 'article'), function() {
     Route::get('/show/{id}', 'ArticleController@show');
     Route::get('/create/{id?}', 'ArticleController@getCreate');
     Route::get('/drafts', 'ArticleController@showDrafts');
-    Route::get('/sent/{id?}', 'ArticleController@showSentArticles');
-    Route::get('/accepted/{id?}', 'ArticleController@showAcceptedArticles');
+    Route::get('/sent', 'ArticleController@showSentArticles');
+    Route::get('/accepted', 'ArticleController@showAcceptedArticles');
     Route::post('/create', 'ArticleController@postCreate');
     Route::post('/getArticle', 'ArticleController@getArticle');
+    Route::post('/sending', 'ArticleController@postSendArticle');
+    Route::post('/sendReview', 'ArticleController@postCreateReview');
 });
 
 Route::group(array('prefix' => 'manage'), function() {
