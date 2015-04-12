@@ -4,24 +4,52 @@
 <script>
     $(document).ready(function () {
         var id;
+        
+        function loadReview(area, dialog){
+            $.ajax({
+                'method': 'post',
+                'url': '{{ action("ArticleController@getReview") }}',
+                'dataType': 'json',
+                'data': {
+                    'article_id': id
+                },
+                'success': function (result) {
+                    if(result['text']) {
+                      area.val(result['text']);
+                    }
+                    else {
+                      area.val('');
+                    }
+                    dialog.modal('show');
+                }
+            });
+        }
+        
         $('.addReview').on('click', function(){
-            $('#addReview').modal('show');
             id = $(this).attr('data-id');
+            loadReview($('#reviewAdd'), $('#addReview'));
+            
         });
         $('#addReviewButton').on('click', function(){
-            if($('#review').val()){
+            if($('#reviewAdd').val()){
             $.ajax({
                 'method': 'post',
                 'url': '{{ action("ArticleController@postCreateReview") }}',
                 'dataType': 'json',
                 'data': {
                     'article_id': id,
-                    'text': $('#review').val()
+                    'text': $('#reviewAdd').val()
                 },
                 'success': function (result) {
+                    $('#addReview').modal('hide');
                 }
-            })
+            });
         }
+        });
+        
+        $('.showReview').on('click', function(){
+            id = $(this).attr('data-id');
+            loadReview($('#reviewShow'), $('#showReview'));
         });
         
     });
@@ -62,14 +90,18 @@
                 </button>
             </td>
             <td>
-                <button type="button" class="btn btn-default publishArticle" data-id="{{$sentArticle->id}}">
+                {{ Form::open(array('action' => 'ArticleController@postPublishArticle', 'method' => 'post')) }}
+                <button type="submit" class="btn btn-default publishArticle" data-id="{{$sentArticle->id}}" value="{{$sentArticle->id}}" name="id">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 </button>
+                {{ Form::close() }}
             </td>
             <td>
-                <button type="button" class="btn btn-default returnArticle" data-id="{{$sentArticle->id}}">
+                {{ Form::open(array('action' => 'ArticleController@postDontPublishArticle', 'method' => 'post')) }}
+                <button type="submit" class="btn btn-default returnArticle" data-id="{{$sentArticle->id}}" value="{{$sentArticle->id}}" name="id">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </button>
+                {{ Form::close() }}
             </td>
         </tr>
         @endforeach
@@ -77,13 +109,13 @@
 </table>
 <br>
 <h4>Publikované články:</h4> 
-<table class="table table-hover">
+<table class="table table-hover text-center">
     <thead>
         <tr>
-            <th>Nadpis</th>
-            <th>Autor</th>
-            <th>Zobraziť recenziu</th>
-            <th>Zmazať</th>
+            <th class="text-center">Nadpis</th>
+            <th class="text-center">Autor</th>
+            <th class="text-center">Zobraziť recenziu</th>
+            <th class="text-center">Zmazať</th>
         </tr>
     </thead>
     <tbody>
@@ -101,9 +133,11 @@
                 </button>
             </td>
             <td>
-                <button type="button" class="btn btn-default delete" data-id="{{$acceptedArticle->id}}">
+                {{ Form::open(array('action' => 'ArticleController@postDeleteArticle', 'method' => 'post')) }}
+                <button type="submit" class="btn btn-default delete" data-id="{{$acceptedArticle->id}}" value="{{$acceptedArticle->id}}" name="id">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </button>
+                {{ Form::close() }}
             </td>
         </tr>
         @endforeach
@@ -120,14 +154,36 @@
             <div class="modal-body" id="addReviewBody">
                 <form role="form">
                     <div class="form-group">
-                        <label for="review" class="control-label">Hodnoteie:</label>
-                        <textarea class="form-control" id="review"></textarea>
+                        <label for="review" class="control-label">Hodnotenie:</label>
+                        <textarea class="form-control" id="reviewAdd"></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
                 <button type="button" class="btn btn-primary" id="addReviewButton">Ohodnoť</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="showReview" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Ohodnotenie článku</h4>
+            </div>
+            <div class="modal-body" id="showReviewBody">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="review" class="control-label">Hodnotenie:</label>
+                        <textarea disabled class="form-control" id="reviewShow" style="height: 150px;"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
             </div>
         </div>
     </div>

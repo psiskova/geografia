@@ -75,6 +75,36 @@
         }
         loadArticle()
         @endif
+        
+        function deleteDraft(){
+            $.ajax({
+                'method': 'post',
+                'url': '{{ action("ArticleController@postDeleteDraft") }}',
+                'dataType': 'text',
+                'data': {
+                    'id': $('#id').val(),
+                },
+                'success': function (result) {
+                    $('#caption').val('');
+                    $('#section_id').val('');
+                    $('.summernote').code('');
+                    $('#id').val('');
+                }
+            })
+        }
+        $('#delete').on('click', function(){ 
+            if($('#id').val()) {
+                deleteDraft();
+            }
+            else {
+                $('#caption').val('');
+                $('#section_id').val('');
+                $('.summernote').code('');
+                $('#id').val('');
+            }
+            event.preventDefault();
+            return false;
+        });
     });
 </script>
 @stop
@@ -109,10 +139,13 @@
     <div class="form-group">
         <div class="col-md-offset-3 col-md-9">
             {{Form::submit('Odošli', array('class'=>'btn btn-primary pull-right', 'style'=>'margin-left: 10px', 'id'=>'send'))}}
+            {{ Form::close() }}
             <button id="save" class="btn btn-primary ladda-button pull-right" data-style="expand-left">
                 <span class="ladda-label">Ulož</span>
             </button>
+            <button type="button" id="delete" class="btn btn-default trash">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
-{{ Form::close() }}
 @stop

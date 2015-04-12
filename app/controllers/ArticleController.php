@@ -49,6 +49,61 @@ class ArticleController extends BaseController {
                         ->with('message', 'Článok bol odoslaný na kontrolu');
     }
 
+    public function postPublishArticle() {
+        $input = Input::all();
+//dd($input);
+        $article = Article::find($input['id']);
+        if (count(Review::where('article_id', '=', $input['id'])->get()) == 0) {
+            return Redirect::action('ArticleController@showArticleManagement')
+                            ->with('error', 'Chýba ohodnotenie článku!');
+        } else {
+            $article->state = Article::ACCEPTED;
+            $article->save();
+            return Redirect::action('ArticleController@showArticleManagement')
+                            ->with('message', 'Článok bol publikovaný');
+        }
+    }
+
+    public function postDontPublishArticle() {
+        $input = Input::all();
+        $article = Article::find($input['id']);
+        if (count(Review::where('article_id', '=', $input['id'])->get()) == 0) {
+            return Redirect::action('ArticleController@showArticleManagement')
+                            ->with('error', 'Chýba ohodnotenie článku!');
+        } else {
+            $article->state = Article::DRAFT;
+            $article->save();
+            return Redirect::action('ArticleController@showArticleManagement')
+                            ->with('message', 'Článok bol vrátený na prepracovanie');
+        }
+    }
+
+    public function postDeleteArticle() {
+        $input = Input::all();
+        if (count(Review::where('article_id', '=', $input['id'])->get()) == 0) {
+            Article::find($input['id'])->delete();
+        } else {
+            $review = Review::where('article_id', '=', $input['id'])->first();
+            $review->delete();
+            Article::find($input['id'])->delete();
+        }
+        return Redirect::action('ArticleController@showArticleManagement')
+                        ->with('message', 'Článok bol zmazaný');
+    }
+
+    public function postDeleteDraft() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            if (count(Review::where('article_id', '=', $input['id'])->get()) == 0) {
+                Article::find($input['id'])->delete();
+            } else {
+                $review = Review::where('article_id', '=', $input['id'])->first();
+                $review->delete();
+                Article::find($input['id'])->delete();
+            }
+        }
+    }
+
     public function getArticle() {
         if (Request::ajax()) {
             $article = Article::find(Input::all('id'))[0];
@@ -57,7 +112,7 @@ class ArticleController extends BaseController {
     }
 
     public function showHome() {
-        $articles = Article::accepted()->orderBy('created_at', 'desc')->take(5)->get();
+        $articles = Article::accepted()->orderBy('updated_at', 'desc')->take(5)->get();
         return View::make('articles.show', array(
                     'articles' => $articles
         ));
@@ -99,8 +154,8 @@ class ArticleController extends BaseController {
     }
 
     public function showArticleManagement() {
-        $sentArticles = Article::sent()->orderBy('created_at', 'desc')->get();
-        $acceptedArticles = Article::accepted()->orderBy('created_at', 'desc')->get();
+        $sentArticles = Article::sent()->orderBy('updated_at', 'desc')->get();
+        $acceptedArticles = Article::accepted()->orderBy('updated_at', 'desc')->get();
         return View::make('articles.article_management', array(
                     'acceptedArticles' => $acceptedArticles,
                     'sentArticles' => $sentArticles
@@ -124,6 +179,18 @@ class ArticleController extends BaseController {
         ));
     }
 
+    public function postDeleteSection() {
+        $input = Input::all();
+        if (count(Article::where('section_id', '=', $input['id'])->get()) == 0) {
+            Section::find($input['id'])->delete();
+            return Redirect::action('ArticleController@showSectionManagement')
+                            ->with('message', 'Rubrika bola zmazaná');
+        } else {
+            return Redirect::action('ArticleController@showSectionManagement')
+                            ->with('message', 'Rubriku nemožno zmazať, obsahuje články!');
+        }
+    }
+
     public function postCreateReview() {
         if (Request::ajax()) {
             $input = Input::all();
@@ -138,6 +205,15 @@ class ArticleController extends BaseController {
             return Response::json(array(
                         'result' => 'ok'
             ));
+        }
+    }
+
+    public function getReview() {
+        $input = Input::all();
+        $input['user_id'] = 1;
+        if (Request::ajax()) {
+            $review = Review::where('article_id', '=', $input['article_id'])->first();
+            return Response::json($review);
         }
     }
 

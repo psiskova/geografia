@@ -36,6 +36,8 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li>{{ HTML::linkAction('ArticleController@getCreate', 'Články', array(), array('class' => 'nav navbar-nav')) }}</li>
+                        <li><a href="#">Úlohy</a></li>
+                        <li><a href="#">Testy</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
