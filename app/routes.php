@@ -40,4 +40,6 @@ Route::group(array('prefix' => 'manage'), function() {
     Route::get('/articles', 'ArticleController@showArticleManagement');
     Route::get('/sections', 'ArticleController@showSectionManagement');
     Route::post('/sections/deleting', 'ArticleController@postDeleteSection');
+    Route::post('/sendReview', 'ArticleController@postCreateSection');
+    Route::post('/getSection', 'ArticleController@getSection');
 });

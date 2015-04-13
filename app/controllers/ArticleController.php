@@ -191,6 +191,25 @@ class ArticleController extends BaseController {
         }
     }
 
+    public function getSection() {
+        if (Request::ajax()) {
+            return Response::json(Section::find(Input::all()['id']));
+        }
+    }
+
+    public function postCreateSection() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            if ($section = Section::find($input['id'])) {
+                $section->update($input);
+            } else {
+                $section = Section::create($input);
+            }
+            $section->save();
+            return Response::json($section);
+        }
+    }
+
     public function postCreateReview() {
         if (Request::ajax()) {
             $input = Input::all();
