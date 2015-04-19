@@ -14,6 +14,7 @@
 Route::get('/', 'ArticleController@showHome');
 Route::get('/login', 'LoginController@getLogin');
 Route::post('/login', 'LoginController@postLogin');
+Route::post('/register', 'LoginController@postRegister');
 
 Route::group(array('prefix' => 'section'), function() {
     Route::get('/{id}', 'ArticleController@showSection');
@@ -42,4 +43,13 @@ Route::group(array('prefix' => 'manage'), function() {
     Route::post('/sections/deleting', 'ArticleController@postDeleteSection');
     Route::post('/sendReview', 'ArticleController@postCreateSection');
     Route::post('/getSection', 'ArticleController@getSection');
+});
+
+Route::group(array('prefix' => 'task'), function() {
+    Route::get('/actual', 'TaskController@showActual');
+    Route::get('/show/{id}', 'TaskController@show');
+
+    Route::group(array('prefix' => 'homework'), function() {
+        Route::post('/save', 'HomeworkController@save');
+    });
 });
