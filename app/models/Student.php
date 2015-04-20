@@ -15,5 +15,5 @@ class Student extends Eloquent {
         'user_id' => 'required|exists:users,id',
         'class_id' => 'required|exists:classes,id',
     );
-
+    
 }

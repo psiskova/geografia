@@ -43,13 +43,25 @@ Route::group(array('prefix' => 'manage'), function() {
     Route::post('/sections/deleting', 'ArticleController@postDeleteSection');
     Route::post('/sendReview', 'ArticleController@postCreateSection');
     Route::post('/getSection', 'ArticleController@getSection');
+    Route::get('/homework', 'HomeworkController@manage');
+    Route::get('/teachers', 'UserController@showTeachers');
+    Route::get('/students', 'UserController@showStudents');
+    Route::get('/classes', 'UserController@showClasses');
+    Route::get('/waiting', 'UserController@showWaiting');
 });
 
 Route::group(array('prefix' => 'task'), function() {
     Route::get('/actual', 'TaskController@showActual');
+    Route::get('/all', 'TaskController@showAll');
     Route::get('/show/{id}', 'TaskController@show');
 
     Route::group(array('prefix' => 'homework'), function() {
         Route::post('/save', 'HomeworkController@save');
+        Route::get('/create/{id?}', 'HomeworkController@getCreate');
+        Route::post('/create', 'HomeworkController@postCreate');
     });
+});
+
+Route::group(array('prefix' => 'class'), function() {
+    Route::get('/{id}', 'UserController@showClass');
 });

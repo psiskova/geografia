@@ -37,6 +37,10 @@ class Task extends Eloquent {
     public function scopeBeforeStop($query) {
         return $query->whereRaw('stop > now()');
     }
+    
+    public function scopeHomework($query) {
+        return $query->where('type', '=', self::HOMEWORK);
+    }
 
     public function isHomework() {
         return $this->type == self::HOMEWORK;

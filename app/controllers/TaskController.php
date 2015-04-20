@@ -19,5 +19,11 @@ class TaskController extends BaseController {
                     'tasks' => $tasks
         ));
     }
+    public function showAll() {
+        $tasks = Task::orderBy('updated_at', 'desc')->get();
+        return View::make('tasks.all', array(
+                    'tasks' => $tasks
+        ));
+    }
 
 }
