@@ -46,17 +46,17 @@
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">Link</a></li>
+                        @if(Auth::check())
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{{Auth::user()->fullName()}}} <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
+                                <li>{{ HTML::linkAction('LoginController@getLogout', 'Odhlásiť sa') }}</li>
                             </ul>
                         </li>
+                        @else
+                        <li>{{ HTML::linkAction('LoginController@getRegister', 'Registrovať sa') }}</li>
+                        <li>{{ HTML::linkAction('LoginController@getLogin', 'Prihlásiť sa') }}</li>
+                        @endif
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->

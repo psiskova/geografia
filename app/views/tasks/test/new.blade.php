@@ -2,9 +2,7 @@
 
 @section('header')
 {{ HTML::style('css/font-awesome.min.css') }}
-{{ HTML::style('css/summernote.css') }}
 {{ HTML::style('css/ladda-themeless.min.css') }}
-{{ HTML::script('js/summernote.min.js') }}
 {{ HTML::script('js/moment.min.js') }}
 {{ HTML::script('js/locales.min.js') }}
 {{ HTML::script('js/datepicker.min.js') }}
@@ -15,15 +13,7 @@
 <script>
     $(document).ready(function() {
         //var l = Ladda.create(document.getElementById('save'));
-        $('.summernote').summernote({
-            height: '150px'
-        });
-
         $('#send').on('click', function() {
-            if ($('.summernote').code()) {
-                $('[name=text]').val($('.summernote').code());
-                return true;
-            }
             return false;
         });
 
@@ -35,7 +25,7 @@
 @stop
 
 @section('middle')
-{{ Form::open(array('action' => 'HomeworkController@postCreate', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
+{{ Form::open(array('action' => 'QuestionController@postCreate', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
 
 {{ Form::hidden('text', '') }}
 <div class="form-group">
@@ -71,14 +61,6 @@
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
-        </div>
-    </div>
-</div>
-
-<div class="form-group">
-    <div class="col-md-12">
-        <div class="summernote">
-
         </div>
     </div>
 </div>

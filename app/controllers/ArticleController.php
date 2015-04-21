@@ -21,7 +21,7 @@ class ArticleController extends BaseController {
     public function postCreate() {
         if (Request::ajax()) {
             $input = Input::all();
-            $input['user_id'] = 1;
+            $input['user_id'] = Auth::id();
             $input['state'] = Article::DRAFT;
             if (!$article = Article::find($input['id'])) {
                 $article = Article::create($input);
@@ -119,7 +119,8 @@ class ArticleController extends BaseController {
     }
 
     public function showDrafts() {
-        $drafts = Article::draft()->orderBy('created_at', 'desc')->get();
+        $id = Auth::id();
+        $drafts = Article::draft()->articleAuthor($id)->orderBy('created_at', 'desc')->get();
         return View::make('articles.draft', array(
                     'drafts' => $drafts
         ));
@@ -132,7 +133,7 @@ class ArticleController extends BaseController {
           'sentArticles' => $sentArticles
           ));
           } */
-        $id = 1;
+        $id = Auth::id();
         $sentArticles = Article::sent()->articleAuthor($id)->orderBy('created_at', 'desc')->get();
         return View::make('articles.sent', array(
                     'sentArticles' => $sentArticles
@@ -146,7 +147,7 @@ class ArticleController extends BaseController {
           'acceptedArticles' => $acceptedArticles
           ));
           } */
-        $id = 1;
+        $id = Auth::id();
         $acceptedArticles = Article::accepted()->articleAuthor($id)->orderBy('created_at', 'desc')->get();
         return View::make('articles.accepted', array(
                     'acceptedArticles' => $acceptedArticles
@@ -213,7 +214,7 @@ class ArticleController extends BaseController {
     public function postCreateReview() {
         if (Request::ajax()) {
             $input = Input::all();
-            $input['user_id'] = 1;
+            $input['user_id'] = Auth::id();
             if (count(Review::where('article_id', '=', $input['article_id'])->get()) == 0) {
                 $review = Review::create($input);
             } else {
@@ -229,7 +230,7 @@ class ArticleController extends BaseController {
 
     public function getReview() {
         $input = Input::all();
-        $input['user_id'] = 1;
+        $input['user_id'] = Auth::id();
         if (Request::ajax()) {
             $review = Review::where('article_id', '=', $input['article_id'])->first();
             return Response::json($review);
