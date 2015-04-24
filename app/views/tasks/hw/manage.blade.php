@@ -14,29 +14,33 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($hw as $h)
+        @foreach($tasks as $task)
         <tr>
             <td>
-                {{ HTML::linkAction('TaskController@show', $h->name, array('id' => $h->id), array()) }}
+                {{ HTML::linkAction('TaskController@show', $task->name, array('id' => $task->id), array()) }}
             </td>
             <td>
-                <a href="#">{{Classs::find($h->class_id)->name}}</a>
+                <a href="#">{{Classs::find($task->class_id)->name}}</a>
             </td>
             <td>
-                <button type="button" class="btn btn-default editTask" data-id="{{$h->id}}">
-                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                </button>
+                <a href="{{ action('HomeworkController@getCreate', array('id' => $task->id )) }}">
+                    <button type="button" class="btn btn-default editTask" data-id="{{$task->id}}">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </button>
+                </a>
             </td>
             <td>
-                <button type="button" class="btn btn-default showSolutions" data-id="{{$h->id}}">
-                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-                </button>
+                <a href="{{ action('HomeworkController@getAllSolutions', array('id' => Homework::where('task_id', '=', $task->id)->first()->id )) }}">
+                    <button type="button" class="btn btn-default" data-id="{{$task->id}}">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    </button>
+                </a>
             </td>
             <td>
-                {{{ Carbon::parse($h->start)->format('d.m.Y H:m') }}}
+                {{{ Carbon::parse($task->start)->format('d.m.Y H:m') }}}
             </td>
             <td>
-                {{{ Carbon::parse($h->stop)->format('d.m.Y H:m') }}}
+                {{{ Carbon::parse($task->stop)->format('d.m.Y H:m') }}}
             </td>
         </tr>
         @endforeach

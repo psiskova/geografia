@@ -20,4 +20,12 @@ class Solution extends Eloquent {
         'text' => 'required'
     );
 
+    public function user() {
+        return $this->hasOne('User', 'id', 'user_id');
+    }
+
+    public function homework() {
+        return $this->hasOne('Homework', 'id', 'homework_id');
+    }
+
 }

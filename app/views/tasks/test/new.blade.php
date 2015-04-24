@@ -11,14 +11,18 @@
 {{ HTML::script('js/ladda.min.js') }}
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         //var l = Ladda.create(document.getElementById('save'));
-        $('#send').on('click', function() {
+        $('#send').on('click', function () {
             return false;
         });
 
         $('.date').datetimepicker({
             language: 'sk'
+        });
+
+        $('#add').on('click', function () {
+            $('#newQuestion').modal('show');
         });
     });
 </script>
@@ -64,6 +68,38 @@
         </div>
     </div>
 </div>
+<button type="button" id="add" class="btn btn-default">Nová otázka</button>
 {{Form::submit('Odošli', array('class'=>'btn btn-primary pull-right', 'style'=>'margin-left: 10px', 'id'=>'send'))}}
 {{ Form::close() }}
+
+<div class="modal fade" id="newQuestion" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Nová otázka</h4>
+            </div>
+            <div class="modal-body" id="newQuestionBody">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="question" class="control-label">Nová otázka:</label>
+                        <input class="form-control" id="question"></input>
+                    </div>
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            <input type="radio" name="type" id="textAnswer" value="text" checked> Voľná odpoveď
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="type" id="choice" value="choice"> Výber z možností
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="addNewQuestion" class="btn btn-default">Pridaj otázku</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zavrieť</button>
+            </div>
+        </div>
+    </div>
+</div>
 @stop

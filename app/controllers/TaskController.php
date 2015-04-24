@@ -7,9 +7,23 @@ class TaskController extends BaseController {
             return Redirect::action('ArticleController@showHome')
                             ->with('error', 'Sorry bro');
         }
+        $obj = $task->getObj();
+        if ($task->isHomework()) {
+            $solution = Solution::where('user_id', '=', Auth::id())->where('homework_id', '=', $obj->id)->first();
+            if ($solution) {
+                return View::make('tasks.hw.show', array(
+                            'task' => $task,
+                            'class' => $obj,
+                            'disabled' => true,
+                            'text' => $solution->text
+                ));
+            }
+        } else {
+            
+        }
         return View::make('tasks.' . ($task->isHomework() ? 'hw' : 'test') . '.show', array(
                     'task' => $task,
-                    'class' => $task->getObj()
+                    'class' => $obj
         ));
     }
 
@@ -19,6 +33,7 @@ class TaskController extends BaseController {
                     'tasks' => $tasks
         ));
     }
+
     public function showAll() {
         $tasks = Task::orderBy('updated_at', 'desc')->get();
         return View::make('tasks.all', array(

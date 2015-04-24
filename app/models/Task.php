@@ -15,6 +15,7 @@ class Task extends Eloquent {
         'stop',
         'type',
         'state',
+        'name',
         'created_at',
         'updated_at'
     );
@@ -23,7 +24,8 @@ class Task extends Eloquent {
         'class_id' => 'required|exists:classes,id',
         'start' => 'required|date',
         'stop' => 'required|date|after:start',
-        'type' => 'required|in:0,1'
+        'type' => 'required|in:0,1',
+        'name' => 'required'
     );
 
     public function scopeAfterStart($query) {
@@ -37,7 +39,7 @@ class Task extends Eloquent {
     public function scopeBeforeStop($query) {
         return $query->whereRaw('stop > now()');
     }
-    
+
     public function scopeHomework($query) {
         return $query->where('type', '=', self::HOMEWORK);
     }
@@ -53,6 +55,10 @@ class Task extends Eloquent {
             case self::TEST:
                 return NULL;
         };
+    }
+    
+    public function classs(){
+        return $this->hasOne('Classs', 'id', 'class_id');
     }
 
 }

@@ -9,7 +9,6 @@
         {{HTML::style('css/bootstrap.min.css')}}
         {{HTML::script('js/jquery.min.js')}}
         {{HTML::script('js/bootstrap.min.js')}}
-        @yield('header')
         <script>
             $(document).ready(function () {
                 $.ajaxSetup({
@@ -17,6 +16,7 @@
                 });
             });
         </script>
+        @yield('header')
     </head>
     <body>
         <nav class="navbar navbar-default">

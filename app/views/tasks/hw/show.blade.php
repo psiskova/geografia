@@ -42,6 +42,7 @@
         transform: rotate(-90deg);
     }
 </style>
+@if(!isset($disabled))
 <script>
     $(document).ready(function () {
         //var l = Ladda.create(document.getElementById('save'));
@@ -58,6 +59,7 @@
         });
     });
 </script>
+@endif
 @stop
 
 @section('middle')
@@ -81,11 +83,17 @@
 {{ Form::hidden('text', '') }}
 <div class="form-group">
     <div class="col-md-12">
+        @if(isset($disabled))
+            {{ $text }}
+        @else
         <div class="summernote">
 
         </div>
+        @endif
     </div>
 </div>
+@if(!isset($disabled))
 {{Form::submit('Odošli', array('class'=>'btn btn-primary pull-right', 'style'=>'margin-left: 10px', 'id'=>'send'))}}
+@endif
 {{ Form::close() }}
 @stop

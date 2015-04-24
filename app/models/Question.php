@@ -1,25 +1,27 @@
 <?php
 
-class Homework extends Eloquent {
+class Question extends Eloquent {
 
     use \Watson\Validating\ValidatingTrait;
 
-    protected $table = 'homeworks';
+    const TEXT = 1;
+    const CHOICE = 2;
+
+    protected $table = 'questions';
     protected $fillable = array(
         'task_id',
         'text',
         'points',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'type'
     );
     protected $rules = array(
         'task_id' => 'required|exists:tasks,id',
         'text' => 'required',
-        'points' => 'required'
+        'points' => 'required',
+        'type' => 'required'
+        
     );
-
-    public function task() {
-        return $this->hasOne('Task', 'id', 'task_id');
-    }
 
 }
