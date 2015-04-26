@@ -6,7 +6,7 @@ class CorrectAnswer extends Eloquent {
 
     const CORRECT = 1;
 
-    protected $table = 'correctanswers';
+    protected $table = 'correctAnswers';
     protected $fillable = array(
         'question_id',
         'text',
