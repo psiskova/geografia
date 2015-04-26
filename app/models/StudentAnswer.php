@@ -4,7 +4,7 @@ class StudentAnswer extends Eloquent {
 
     use \Watson\Validating\ValidatingTrait;
 
-    protected $table = 'studentanswers';
+    protected $table = 'studentAnswers';
     protected $fillable = array(
         'user_id',
         'question_id',
