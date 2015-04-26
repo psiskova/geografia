@@ -46,8 +46,7 @@
 
 @section('middle')
 <h3 style="margin-bottom: 0; text-align: center">{{{ $task->name }}}</h3>
-{{ Form::open(array('action' => 'HomeworkController@save', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
-{{ Form::hidden('text', '') }}
+{{ Form::open(array('action' => 'QuestionController@save', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
 <div class="form-group">
     <div class="col-md-12">
         <ol>
@@ -58,12 +57,20 @@
                     @foreach(CorrectAnswer::where('question_id', '=', $question->id)->get() as $answer)
                     <div class="checkbox" style="padding: 0; min-height: 0">
                         <label>
-                            <input type="checkbox"> {{{ $answer->text }}}
+                            @if(isset($disabled))
+                            <input type="checkbox" {{ count(StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0 ? 'checked' : '' }} disabled> {{{ $answer->text }}}{{ (count(StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0) ? ($answer->isCorrect() ? ' Správna odpoveď' : ' Nesprávna odpoveď') : (!$answer->isCorrect() ? ' Správna odpoveď' : ' Nesprávna odpoveď') }}
+                            @else
+                            <input type="checkbox" name="{{{ $question->id }}}[]" value="{{{ $answer->id }}}"> {{{ $answer->text }}}
+                            @endif
                         </label>
                     </div>
                     @endforeach
                     @else
-                    <textarea class="form-control" rows="5"></textarea>
+                    @if(isset($disabled))
+                    {{{ StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->first()->text }}}
+                    @else
+                    <textarea class="form-control" rows="5"  name="{{{ $question->id }}}"></textarea>
+                    @endif
                     @endif
                 </ul>
             </li>

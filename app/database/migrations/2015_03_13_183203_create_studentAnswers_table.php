@@ -17,7 +17,7 @@ class CreateStudentAnswersTable extends Migration {
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('question_id')->unsigned();
             $table->foreign('question_id')->references('id')->on('questions');
-            $table->integer('answer_id')->unsigned();
+            $table->integer('answer_id')->unsigned()->nullable();
             $table->foreign('answer_id')->references('id')->on('correctAnswers');
             $table->longText('text');
             $table->timestamps();

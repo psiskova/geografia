@@ -4,6 +4,7 @@ class CorrectAnswer extends Eloquent {
 
     use \Watson\Validating\ValidatingTrait;
 
+    const CORRECT = 1;
 
     protected $table = 'correctanswers';
     protected $fillable = array(
@@ -16,7 +17,10 @@ class CorrectAnswer extends Eloquent {
     protected $rules = array(
         'question_id' => 'required|exists:questions,id',
         'text' => 'required'
-        
     );
+
+    public function isCorrect() {
+        return $this->correct == self::CORRECT;
+    }
 
 }

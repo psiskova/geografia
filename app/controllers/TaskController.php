@@ -19,7 +19,15 @@ class TaskController extends BaseController {
                 ));
             }
         } else {
-            
+            $questions = Question::where('task_id', '=', $task->id)->get(['id'])->toArray();
+            $studentans = StudentAnswer::where('user_id', '=', Auth::id())->whereIn('question_id', $questions)->get();
+            if (count($studentans) > 0) {
+                return View::make('tasks.test.show', array(
+                            'task' => $task,
+                            'class' => $obj,
+                            'disabled' => true,
+                ));
+            }
         }
         return View::make('tasks.' . ($task->isHomework() ? 'hw' : 'test') . '.show', array(
                     'task' => $task,

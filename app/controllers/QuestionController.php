@@ -74,10 +74,40 @@ class QuestionController extends BaseController {
     }
 
     public function getAllSolutions($id) {
+        $questions = Question::where('task_id', '=', $id)->get(['id'])->toArray();
+        $users = StudentAnswer::whereIn('question_id', $questions)->distinct()->get(['user_id', 'created_at']);
         return View::make('tasks.test.solutions', array(
-                    'solutions' => Solution::where('homework_id', '=', $id)->get(),
-                    'homework' => Homework::find($id)
+                    'users' => $users,
+                    'task' => Task::find($id)
         ));
+    }
+
+    public function save() {
+        $input = Input::except(['_token']);
+        foreach ($input as $key => $answer) {
+            $question = Question::find($key);
+            switch ($question->type) {
+                case Question::TEXT:
+                    $studentanswer = StudentAnswer::create(array(
+                                'user_id' => Auth::id(),
+                                'question_id' => $question->id,
+                                'text' => $answer
+                    ));
+                    $studentanswer->save();
+                    break;
+                case Question::CHOICE:
+                    foreach ($answer as $answers) {
+                        $studentanswer = StudentAnswer::create(array(
+                                    'user_id' => Auth::id(),
+                                    'question_id' => $question->id,
+                                    'answer_id' => $answers
+                        ));
+                        $studentanswer->save();
+                    }
+                    break;
+            }
+        }
+        return Redirect::back();
     }
 
 }

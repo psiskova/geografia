@@ -1,7 +1,7 @@
 @extends('tasks.task')
 
 @section('middle')
-<h3>{{{ $homework->task->name }}}</h3>
+<h3>{{{ $task->name }}}</h3>
 <table class="table table-hover text-center">
     <thead>
         <tr>
@@ -12,19 +12,19 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($solutions as $solution)
+        @foreach($users as $user)
         <tr>
             <td>
-                {{ $solution->user->fullName() }}
+                {{ User::find($user->user_id)->fullName() }}
             </td>
             <td>
-                {{{ $homework->task->classs->name }}}
+                {{{ $task->classs->name }}}
             </td>
             <td>
-                {{ $solution->points . ' / ' . $homework->points }}
+                
             </td>
             <td>
-                {{{ Carbon::parse($solution->created_at)->format('d.m.Y H:m') }}}
+                {{{ Carbon::parse($user->created_at)->format('d.m.Y H:m') }}}
             </td>
         </tr>
         @endforeach

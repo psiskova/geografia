@@ -42,7 +42,7 @@ class LoginController extends BaseController {
             'last_name' => $input['last_name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            'confirmed' => 0
+            'confirmed' => 1
         ));
         return Redirect::action('LoginController@getLogin')
                         ->with('message', 'Užívateľ bol úspešne vytvorený.');

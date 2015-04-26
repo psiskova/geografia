@@ -72,6 +72,7 @@ Route::group(array('prefix' => 'task'), function() {
         Route::post('/getText', 'HomeworkController@getText');
     });
     Route::group(array('prefix' => 'tests'), function() {
+        Route::post('/save', 'QuestionController@save');
         Route::get('/create/{id?}', 'QuestionController@getCreate');
         Route::post('/create', 'QuestionController@postCreate');
         Route::get('/getAllSolutions/{id}', 'QuestionController@getAllSolutions');
