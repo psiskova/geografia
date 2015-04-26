@@ -17,7 +17,7 @@
                 {{{ $student->fullName() }}}
             </td>
             <td>
-                {{{ Classs::find(Student::where('user_id', '=', $student->id)->first()->class_id)->name }}}
+                {{{ Classs::find(Student::where('user_id', '=', $student->id)->first()->class_id)->name or ''}}}
             </td>
             <td>
                 <button type="button" class="btn btn-default unbanStudent" data-id="{{$student->id}}">
