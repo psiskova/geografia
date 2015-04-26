@@ -7,6 +7,6 @@
     <li role="presentation">{{ HTML::linkAction('HomeworkController@getCreate', 'Nová úloha', array(), array('class' => 'nav nav-pills nav-stacked')) }}</li> 
     <li role="presentation">{{ HTML::linkAction('HomeworkController@manage', 'Správa úloh', array(), array('class' => 'nav nav-pills nav-stacked')) }}</li> 
     <li role="presentation">{{ HTML::linkAction('QuestionController@getCreate', 'Nový test', array(), array('class' => 'nav nav-pills nav-stacked')) }}</li> 
-    <li role="presentation"><a href="#" class="nav nav-pills nav-stacked">Správa testov</a></li>
+    <li role="presentation">{{ HTML::linkAction('QuestionController@manage', 'Správa testov', array(), array('class' => 'nav nav-pills nav-stacked')) }}</li> 
 </ul>
 @stop

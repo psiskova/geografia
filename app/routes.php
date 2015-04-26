@@ -49,6 +49,7 @@ Route::group(array('prefix' => 'manage'), function() {
         Route::post('/sendReview', 'ArticleController@postCreateSection');
         Route::post('/getSection', 'ArticleController@getSection');
         Route::get('/homework', 'HomeworkController@manage');
+        Route::get('/test', 'QuestionController@manage');
         Route::get('/students', 'UserController@showStudents');
         Route::get('/classes', 'UserController@showClasses');
         Route::get('/waiting', 'UserController@showWaiting');
@@ -73,6 +74,7 @@ Route::group(array('prefix' => 'task'), function() {
     Route::group(array('prefix' => 'tests'), function() {
         Route::get('/create/{id?}', 'QuestionController@getCreate');
         Route::post('/create', 'QuestionController@postCreate');
+        Route::get('/getAllSolutions/{id}', 'QuestionController@getAllSolutions');
     });
 });
 

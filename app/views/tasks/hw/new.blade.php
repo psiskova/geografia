@@ -50,7 +50,6 @@
 
 @section('middle')
 {{ Form::open(array('action' => 'HomeworkController@postCreate', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
-
 {{ Form::hidden('text', '') }}
 {{ Form::hidden('id', isset($task->id) ? $task->id : '') }}
 <div class="form-group">

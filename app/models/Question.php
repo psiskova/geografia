@@ -21,7 +21,6 @@ class Question extends Eloquent {
         'text' => 'required',
         'points' => 'required',
         'type' => 'required'
-        
     );
 
 }

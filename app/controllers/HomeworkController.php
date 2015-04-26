@@ -16,6 +16,10 @@ class HomeworkController extends BaseController {
 
     public function getCreate($id = null) {
         $task = Task::find($id);
+        if ($task && !$task->isHomework()) {
+            return Redirect::action('ArticleController@showHome')
+                            ->with('error', 'Nemáte prístup na túto stránku.');
+        }
         return View::make('tasks.hw.new', array(
                     'task' => $task
         ));

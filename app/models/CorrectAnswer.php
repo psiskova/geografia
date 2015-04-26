@@ -1,11 +1,11 @@
 <?php
 
-class StudentAnswer extends Eloquent {
+class CorrectAnswer extends Eloquent {
 
     use \Watson\Validating\ValidatingTrait;
 
 
-    protected $table = 'studentanswers';
+    protected $table = 'correctanswers';
     protected $fillable = array(
         'question_id',
         'text',

@@ -44,6 +44,10 @@ class Task extends Eloquent {
         return $query->where('type', '=', self::HOMEWORK);
     }
 
+    public function scopeQuestion($query) {
+        return $query->where('type', '=', self::TEST);
+    }
+
     public function isHomework() {
         return $this->type == self::HOMEWORK;
     }
