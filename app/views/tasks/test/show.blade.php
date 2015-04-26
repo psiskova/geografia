@@ -46,32 +46,29 @@
 
 @section('middle')
 <h3 style="margin-bottom: 0; text-align: center">{{{ $task->name }}}</h3>
-<br>
-<br>
-<div class="panel panel-default noselect">
-    <div class="panel-heading" data-toggle="collapse" data-target="#collapseOne">
-        <a href="javascript:void(0);">{{{ $task->name }}} {{{ Carbon::parse($task->stop)->format('d.m.Y H:m') }}}</a>
-    </div>
-    <div id="collapseOne" class="panel-collapse collapse in">
-        <div class="panel-body">
-            {{ $class->text }}
-        </div>
-    </div>
-</div>
-
-<h3>Text</h3>
 {{ Form::open(array('action' => 'HomeworkController@save', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
-{{ Form::hidden('homework_id', $class->id) }}
 {{ Form::hidden('text', '') }}
 <div class="form-group">
     <div class="col-md-12">
-        @if(isset($disabled))
-            {{ $text }}
-        @else
-        <div class="summernote">
-
-        </div>
-        @endif
+        <ol>
+            @foreach(Question::where('task_id', '=', $task->id)->get() as $question)
+            <li><strong>{{{ $question->text }}}</strong>
+                <ul class="list-unstyled" style="margin-bottom: 15px">
+                    @if($question->type == Question::CHOICE)
+                    @foreach(CorrectAnswer::where('question_id', '=', $question->id)->get() as $answer)
+                    <div class="checkbox" style="padding: 0; min-height: 0">
+                        <label>
+                            <input type="checkbox"> {{{ $answer->text }}}
+                        </label>
+                    </div>
+                    @endforeach
+                    @else
+                    <textarea class="form-control" rows="5"></textarea>
+                    @endif
+                </ul>
+            </li>
+            @endforeach
+        </ol>
     </div>
 </div>
 @if(!isset($disabled))
