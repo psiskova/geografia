@@ -109,5 +109,15 @@ class QuestionController extends BaseController {
         }
         return Redirect::back();
     }
+    
+    public function delete() {
+    $input = Input::all();
+    $questions = Question::where('task_id', '=', $input['id']);
+    $questions->delete();
+    $task = Task::find($input['id']);
+    $task->delete();
+    return Redirect::action('QuestionController@manage')
+                            ->with('message', 'Test bol zmazaný');
+}
 
 }

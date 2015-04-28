@@ -34,11 +34,15 @@
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    @if(Auth::check())
                     <ul class="nav navbar-nav">
                         <li>{{ HTML::linkAction('ArticleController@getCreate', 'Články', array(), array('class' => 'nav navbar-nav')) }}</li>
                         <li>{{ HTML::linkAction('TaskController@showActual', 'Zadania', array(), array('class' => 'nav navbar-nav')) }}</li>
-                        <li>{{ HTML::linkAction('UserController@showTeachers', 'Užívatelia', array(), array('class' => 'nav navbar-nav')) }}</li>
+                        @if(Auth::user()->admin > 0)
+                        <li>{{ HTML::linkAction('UserController@showStudents', 'Užívatelia', array(), array('class' => 'nav navbar-nav')) }}</li>
+                        @endif
                     </ul>
+                    @endif
                     <form class="navbar-form navbar-left" role="search">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Search">

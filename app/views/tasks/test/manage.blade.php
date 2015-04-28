@@ -11,6 +11,7 @@
             <th class="text-center">Riešenia</th>
             <th class="text-center">Štart</th>
             <th class="text-center">Deadline</th>
+            <th class="text-center">Zmazať</th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +42,13 @@
             </td>
             <td>
                 {{{ Carbon::parse($task->stop)->format('d.m.Y H:m') }}}
+            </td>
+            <td>
+                {{ Form::open(array('action' => 'QuestionController@delete', 'method' => 'post')) }}
+                <button type="submit" class="btn btn-default delete" data-id="{{$task->id}}" value="{{$task->id}}" name="id">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+                {{ Form::close() }}
             </td>
         </tr>
         @endforeach

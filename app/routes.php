@@ -49,7 +49,9 @@ Route::group(array('prefix' => 'manage'), function() {
         Route::post('/sendReview', 'ArticleController@postCreateSection');
         Route::post('/getSection', 'ArticleController@getSection');
         Route::get('/homework', 'HomeworkController@manage');
+        Route::post('/homework/delete', 'HomeworkController@delete');
         Route::get('/test', 'QuestionController@manage');
+        Route::get('/test/delete', 'QuestionController@delete');
         Route::get('/students', 'UserController@showStudents');
         Route::get('/classes', 'UserController@showClasses');
         Route::get('/waiting', 'UserController@showWaiting');
@@ -70,6 +72,8 @@ Route::group(array('prefix' => 'task'), function() {
         Route::get('/getAllSolutions/{id}', 'HomeworkController@getAllSolutions');
         Route::post('/create', 'HomeworkController@postCreate');
         Route::post('/getText', 'HomeworkController@getText');
+        Route::post('/addPoints', 'HomeworkController@addPoints');
+        Route::get('/show/solution{id}', 'HomeworkController@showSolution');
     });
     Route::group(array('prefix' => 'tests'), function() {
         Route::post('/save', 'QuestionController@save');

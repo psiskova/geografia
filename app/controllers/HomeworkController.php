@@ -78,5 +78,40 @@ class HomeworkController extends BaseController {
                     'homework' => Homework::find($id)
         ));
     }
+    
+public function showSolution($id) {
+    $solution = Solution::where('id', '=', $id)->first();
+    $homework = Homework::where('id', '=', $solution->homework_id)->first();
+    $task = Task::where('id', '=', $homework->task_id)->first();
+    return View::make('tasks.hw.show_solution', array(
+                    'solution' => $solution,
+                    'homework' => $homework,
+                    'task' => $task
+        ));
+}
+
+public function addPoints() {
+    $input = Input::all();
+    $solution = Solution::find($input['id']);
+    $solution->update($input);
+     if ($solution->save()) {
+            return Redirect::action('HomeworkController@manage')
+                            ->with('message', 'Úloha bola obodovaná');
+        }
+}
+
+public function delete() {
+    $input = Input::all();
+    $hw = Homework::where('task_id', '=', $input['id'])->first();
+    if ($hw && count(Solution::where('homework_id', '=', $hw->id)->get()) == 0){
+    $hw->delete();
+    $task = Task::find($input['id']);
+    $task->delete();
+    return Redirect::action('HomeworkController@manage')
+                            ->with('message', 'Úloha bola zmazaná');
+    }
+     return Redirect::action('HomeworkController@manage')
+                            ->with('error', 'Úlohu obsahuje riešenia');
+}
 
 }
