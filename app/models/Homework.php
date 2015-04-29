@@ -15,7 +15,7 @@ class Homework extends Eloquent {
     protected $rules = array(
         'task_id' => 'required|exists:tasks,id',
         'text' => 'required',
-        'points' => 'required'
+        'points' => 'required|integer'
     );
 
     public function task() {

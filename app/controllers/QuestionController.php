@@ -26,9 +26,15 @@ class QuestionController extends BaseController {
                 
             }
             //najprv vymazeme ak nejake su
-            //Question::where('task_id', '=', Input::all()['id'])->delete();
-            $task = Task::create($task_values);
-            if ($task->save()) {
+            if (isset($task_values['id']) && $task_values['id'] != '') {
+                $questions = Question::where('task_id', '=', $task_values['id']);
+                CorrectAnswer::whereIn('question_id', $questions->get(['id'])->toArray())->delete();
+                $questions->delete();
+                $task = Task::find($task_values['id']);
+            } else {
+                $task = Task::create($task_values);
+            }
+            if ((isset($task_values['id']) && $task_values['id'] != '') || $task->save()) {
                 foreach ($input as $question) {
                     switch ($question['type']) {
                         case 'text':
@@ -109,15 +115,35 @@ class QuestionController extends BaseController {
         }
         return Redirect::back();
     }
-    
+
     public function delete() {
-    $input = Input::all();
-    $questions = Question::where('task_id', '=', $input['id']);
-    $questions->delete();
-    $task = Task::find($input['id']);
-    $task->delete();
-    return Redirect::action('QuestionController@manage')
+        $input = Input::all();
+        try {
+            $questions = Question::where('task_id', '=', $input['id']);
+            CorrectAnswer::whereIn('question_id', $questions->get(['id'])->toArray())->delete();
+            $questions->delete();
+            Task::find($input['id'])->delete();
+            return Redirect::action('QuestionController@manage')
                             ->with('message', 'Test bol zmazaný');
-}
+        } catch (Exception $e) {
+            return Redirect::action('QuestionController@manage')
+                            ->with('error', 'Test nemohol byť zmazaný');
+        }
+    }
+
+    public function loadData() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            $task = Task::find($input['id']);
+            $questions = Question::where('task_id', '=', $input['id'])->get();
+            $result = array();
+            foreach ($questions as $question) {
+                $temp = $question->toArray();
+                $temp['answers'] = CorrectAnswer::where('question_id', '=', $question->id)->get();
+                $result[] = $temp;
+            }
+            return Response::json($result);
+        }
+    }
 
 }

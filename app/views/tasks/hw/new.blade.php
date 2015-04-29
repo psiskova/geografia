@@ -91,7 +91,7 @@
 <div class="form-group">
     <label for="points" class="col-md-2 control-label" style="text-align:left">Body</label>
     <div class="col-md-3">
-        <input type="text" id="points" class="form-control" name="points" value="@if(isset($task)) {{{ $task->getObj()->points }}} @endif">
+        <input type="text" id="points" class="form-control" name="points" value="@if(isset($task)){{{ $task->getObj()->points }}}@endif">
     </div>
 </div>
 <br><b>Zadanie:</b>

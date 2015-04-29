@@ -2,18 +2,6 @@
 
 class HomeworkController extends BaseController {
 
-    public function save() {
-        $input = Input::all();
-        $input['user_id'] = Auth::id();
-        $solution = Solution::create($input);
-        if ($solution->save()) {
-            return Redirect::action('TaskController@showActual')
-                            ->with('message', 'Úloha bola uložená');
-        }
-        dd($solution->getErrors());
-        return Redirect::back();
-    }
-
     public function getCreate($id = null) {
         $task = Task::find($id);
         if ($task && !$task->isHomework()) {
@@ -23,6 +11,17 @@ class HomeworkController extends BaseController {
         return View::make('tasks.hw.new', array(
                     'task' => $task
         ));
+    }
+    
+    public function save() {
+        $input = Input::all();
+        $input['user_id'] = Auth::id();
+        $solution = Solution::create($input);
+        if ($solution->save()) {
+            return Redirect::action('TaskController@showActual')
+                            ->with('message', 'Úloha bola uložená');
+        }
+        return Redirect::back();
     }
 
     public function getText() {
@@ -42,23 +41,36 @@ class HomeworkController extends BaseController {
         } catch (Exception $e) {
             
         }
+        $task_id = $input['id'];
         if ($task = Task::find($input['id'])) {
+            $task_copy = $task->toArray();
             $task->update($input);
+            $editing = true;
         } else {
             $task = Task::create($input);
+            $editing = false;
         }
         if ($task->save()) {
             $input['task_id'] = $task->id;
             if (count(Homework::where('task_id', '=', $task->id)->get()) == 0) {
                 $hw = Homework::create($input);
             } else {
+                array_forget($input, 'id');
                 $hw = Homework::where('task_id', '=', $task->id)->first();
+                $hw->update($input);
             }
             if ($hw->save()) {
                 return Redirect::action('HomeworkController@getCreate')
                                 ->with('message', 'Uložené');
             } else {
-                $task->delete();
+                if ($editing) {
+                    $task->update($task_copy);
+                    $task->save();
+                    return Redirect::action('HomeworkController@getCreate', array('id' => $task_id))
+                                    ->with('error', 'Chyba pri ukladaní');
+                } else {
+                    $task->delete();
+                }
             }
         }
         return Redirect::action('HomeworkController@getCreate', array('id' => isset($input['id']) ? $input['id'] : null))
@@ -78,40 +90,40 @@ class HomeworkController extends BaseController {
                     'homework' => Homework::find($id)
         ));
     }
-    
-public function showSolution($id) {
-    $solution = Solution::where('id', '=', $id)->first();
-    $homework = Homework::where('id', '=', $solution->homework_id)->first();
-    $task = Task::where('id', '=', $homework->task_id)->first();
-    return View::make('tasks.hw.show_solution', array(
+
+    public function showSolution($id) {
+        $solution = Solution::where('id', '=', $id)->first();
+        $homework = Homework::where('id', '=', $solution->homework_id)->first();
+        $task = Task::where('id', '=', $homework->task_id)->first();
+        return View::make('tasks.hw.show_solution', array(
                     'solution' => $solution,
                     'homework' => $homework,
                     'task' => $task
         ));
-}
+    }
 
-public function addPoints() {
-    $input = Input::all();
-    $solution = Solution::find($input['id']);
-    $solution->update($input);
-     if ($solution->save()) {
+    public function addPoints() {
+        $input = Input::all();
+        $solution = Solution::find($input['id']);
+        $solution->update($input);
+        if ($solution->save()) {
             return Redirect::action('HomeworkController@manage')
                             ->with('message', 'Úloha bola obodovaná');
         }
-}
-
-public function delete() {
-    $input = Input::all();
-    $hw = Homework::where('task_id', '=', $input['id'])->first();
-    if ($hw && count(Solution::where('homework_id', '=', $hw->id)->get()) == 0){
-    $hw->delete();
-    $task = Task::find($input['id']);
-    $task->delete();
-    return Redirect::action('HomeworkController@manage')
-                            ->with('message', 'Úloha bola zmazaná');
     }
-     return Redirect::action('HomeworkController@manage')
-                            ->with('error', 'Úlohu obsahuje riešenia');
-}
+
+    public function delete() {
+        $input = Input::all();
+        $hw = Homework::where('task_id', '=', $input['id'])->first();
+        if ($hw && count(Solution::where('homework_id', '=', $hw->id)->get()) == 0) {
+            $hw->delete();
+            $task = Task::find($input['id']);
+            $task->delete();
+            return Redirect::action('HomeworkController@manage')
+                            ->with('message', 'Úloha bola zmazaná');
+        }
+        return Redirect::action('HomeworkController@manage')
+                        ->with('error', 'Úlohu obsahuje riešenia');
+    }
 
 }

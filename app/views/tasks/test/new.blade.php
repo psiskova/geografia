@@ -31,7 +31,8 @@
                 return $('<div />').attr({
                     'class': 'checkbox'
                 }).append($('<label />').append($('<input />').attr({
-                    'type': 'checkbox'
+                    'type': 'checkbox',
+                    'checked': param.correct
                 }).on('change', function () {
                     questions[param.selectedQuesion].answers[param.id].correct = $(this).is(':checked');
                 })).append(function () {
@@ -42,7 +43,13 @@
 
         var addQuestion = function (param) {
             if (param.type == 'text') {
-                $('#questionList').append($('<li />').text(param.text));
+                $('#questionList').append($('<li />').text(param.text).append(
+                        function () {
+                            return $('<span />').attr({
+                                'class': 'glyphicon glyphicon-trash'
+                            });
+                        }
+                ));
             } else {
                 $('#questionList').append($('<li />').text(param.text + ' ').append(
                         function () {
@@ -65,7 +72,7 @@
         };
 
         $('#send').on('click', function () {
-            //console.log(questions);
+            console.log(questions);
             $.ajax({
                 'url': "{{ action('QuestionController@postCreate') }}",
                 'dataType': 'json',
@@ -74,7 +81,7 @@
                     'class_id': $('#class_id').val(),
                     'start': $('#start').val(),
                     'stop': $('#stop').val(),
-                    'id': $('#id').val(),
+                    'id': $('[name=id]').val(),
                     questions
                 },
                 'method': 'post',
@@ -128,6 +135,51 @@
                 $('#newAnswer').modal('hide');
             }
         });
+        
+        
+        @if(isset($task))
+            $.ajax({
+                'url': "{{ action('QuestionController@loadData') }}",
+                'dataType': 'json',
+                'data': {
+                    'id': $('[name=id]').val()
+                },
+                'method': 'post',
+                'success': function (result) {
+                    result.forEach(function(val){
+                        var id = questions.length;
+                        var type = val.type == 2 ? 'choice' : 'text';
+                        questions.push({
+                            'text': val.text,
+                            'id': id,
+                            'type': type,
+                            'answers': []
+                        });
+                        addQuestion({
+                            'text': val.text,
+                            'type': type,
+                            'id': id
+                        });
+                        if(type == 'choice'){
+                            val.answers.forEach(function(answer){
+                                var answer_id = questions[id].answers.length;
+                                questions[id].answers.push({
+                                    'text': answer.text,
+                                    'id': answer_id,
+                                    'correct': answer.correct == 1 ? true : false
+                                });
+                                addAnswer({
+                                    'text': answer.text,
+                                    'id': answer_id,
+                                    'selectedQuesion': id,
+                                    'correct': answer.correct == 1 ? true : false
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        @endif
     });
 </script>
 @stop
@@ -139,15 +191,15 @@
 <div class="form-group">
     <label for="name" class="col-md-2 control-label" style="text-align:left">Názov</label>
     <div class="col-md-10">
-        <input type="text" id="name" name="name" class="form-control">
+        <input type="text" id="name" name="name" class="form-control" value="{{{ $task->name or '' }}}">
     </div>
 </div>
 <div class="form-group">
     <label for="class_id" class="col-md-2 control-label" style="text-align:left">Trieda</label>
     <div class="col-md-10">
-        <select class="form-control" id="class_id">
+        <select class="form-control" id="class_id" name="class_id">
             @foreach(Classs::all() as $class)
-            <option value="{{ $class->id }}">{{{ $class->name }}}</option>
+            <option value="{{ $class->id }}" @if(isset($task) && $task->class_id == $class->id) selected @endif>{{{ $class->name }}}</option>
             @endforeach
         </select>
     </div>
@@ -156,7 +208,7 @@
     <label for="start" class="col-md-2 control-label" style="text-align:left">Začiatok</label>
     <div class="col-md-3">
         <div class="input-group date">
-            <input type="text" class="form-control" placeholder="" maxlength="10" id="start">
+            <input type="text" class="form-control" placeholder="" id="start" name="start" value="@if(isset($task)){{{Carbon::parse($task->start)->format('d.m.Y H:m') }}}@endif">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -165,7 +217,7 @@
     <label for="stop" class="col-md-2 col-md-offset-2 control-label" style="text-align:left">Koniec</label>
     <div class="col-md-3">
         <div class="input-group date">
-            <input type="text" class="form-control" placeholder="" maxlength="10" id="stop">
+            <input type="text" class="form-control" placeholder="" id="stop" name="stop" value="@if(isset($task)){{{Carbon::parse($task->stop)->format('d.m.Y H:m') }}}@endif">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
