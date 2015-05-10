@@ -55,6 +55,11 @@ Route::group(array('prefix' => 'manage'), function() {
         Route::get('/students', 'UserController@showStudents');
         Route::get('/classes', 'UserController@showClasses');
         Route::get('/waiting', 'UserController@showWaiting');
+        Route::post('/class/postCreate', 'UserController@postCreateClass');
+        Route::post('/class/getClass', 'UserController@getClass');
+        Route::post('/class/deleting', 'UserController@postDeleteClass');
+        Route::post('/user/deleting', 'UserController@deleteUser');
+        Route::post('/user/accepting', 'UserController@acceptUser');
     });
     Route::group(array('before' => 'admin'), function() {
         Route::get('/teachers', 'UserController@showTeachers');

@@ -13,7 +13,6 @@ class Classs extends Eloquent {
     );
     protected $rules = array(
         'name' => 'required',
-        'year' => 'required',
     );
 
 }
