@@ -32,13 +32,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     public function isStudent() {
         return $this->admin == self::STUDENT;
     }
+
     public function isTeacher() {
         return $this->admin == self::TEACHER;
     }
+
     public function isAdmin() {
         return $this->admin == self::ADMIN;
     }
-    
+
     public function fullName() {
         return $this->name . ' ' . $this->last_name;
     }
@@ -48,7 +50,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     }
 
     public function scopeStudents($query) {
-        return $query->where('admin', '=', self::STUDENT);
+        return $query->whereIn('id', Student::all(['user_id'])->toArray())->where('confirmed', '=', 1);
     }
 
 }

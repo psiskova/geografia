@@ -60,9 +60,15 @@ Route::group(array('prefix' => 'manage'), function() {
         Route::post('/class/deleting', 'UserController@postDeleteClass');
         Route::post('/user/deleting', 'UserController@deleteUser');
         Route::post('/user/accepting', 'UserController@acceptUser');
+        Route::post('/user/changeClass', 'UserController@changeClass');
+        Route::post('/user/unbanStudent', 'UserController@unbanStudent');
+        Route::post('/user/banStudent', 'UserController@banStudent');
     });
     Route::group(array('before' => 'admin'), function() {
         Route::get('/teachers', 'UserController@showTeachers');
+        Route::post('/user/changeRole', 'UserController@changeRole');
+        Route::post('/user/unbanTeacher', 'UserController@unbanTeacher');
+        Route::post('/user/banTeacher', 'UserController@banTeacher');
     });
 });
 

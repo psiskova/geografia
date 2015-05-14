@@ -3,7 +3,7 @@
 class UserController extends BaseController {
 
     public function showTeachers() {
-        $teachers = User::teachers()->orderBy('last_name', 'asc')->get();
+        $teachers = User::whereIn('admin', [User::TEACHER, User::ADMIN])->where('id', '<>', Auth::id())->orderBy('last_name', 'asc')->get();
         return View::make('users.teacher', array(
                     'teachers' => $teachers
         ));
@@ -50,13 +50,13 @@ class UserController extends BaseController {
             return Response::json($classs);
         }
     }
-    
+
     public function getClass() {
         if (Request::ajax()) {
             return Response::json(Classs::find(Input::all()['id']));
         }
     }
-    
+
     public function postDeleteClass() {
         $input = Input::all();
         if (count(Student::where('class_id', '=', $input['id'])->get()) == 0) {
@@ -68,7 +68,7 @@ class UserController extends BaseController {
                             ->with('error', 'Triedu nemožno zmazať, nie je prázdna!');
         }
     }
-    
+
     public function acceptUser() {
         $input = Input::all();
         $user = User::find($input['id']);
@@ -76,18 +76,77 @@ class UserController extends BaseController {
         $user->admin = $input['user_role'];
         $user->save();
         if ($input['user_role'] == '0') {
-            $student = Student::create(array('class_id'=>$input['class_id'], 'user_id'=>$input['id']));
+            $student = Student::create(array('class_id' => $input['class_id'], 'user_id' => $input['id']));
             $student->save();
         }
         return Redirect::action('UserController@showWaiting')
-                            ->with('message', 'Užívateľ bol pridaný');
+                        ->with('message', 'Užívateľ bol pridaný');
     }
-    
-    public function deleteUser(){
+
+    public function deleteUser() {
         $input = Input::all();
         User::find($input['id'])->delete();
         return Redirect::action('UserController@showWaiting')
-                            ->with('message', 'Užívateľ bol zmazaný');
+                        ->with('message', 'Užívateľ bol zmazaný');
+    }
+
+    public function changeClass() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            Student::where('user_id', '=', $input['user_id'])->delete();
+            Student::create($input)->save();
+            return Response::json('ok');
+        }
+    }
+
+    public function unbanStudent() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            $user = User::find($input['user_id']);
+            $user->ban = 0;
+            $user->save();
+            return Response::json('ok');
+        }
     }
     
+    public function unbanTeacher() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            $user = User::find($input['user_id']);
+            $user->ban = 0;
+            $user->save();
+            return Response::json('ok');
+        }
+    }
+
+    public function banStudent() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            $user = User::find($input['user_id']);
+            $user->ban = 1;
+            $user->save();
+            return Response::json('ok');
+        }
+    }
+    
+    public function banTeacher() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            $user = User::find($input['user_id']);
+            $user->ban = 1;
+            $user->save();
+            return Response::json('ok');
+        }
+    }
+    
+        public function changeRole() {
+        if (Request::ajax()) {
+            $input = Input::all();
+            $user = User::find($input['user_id']);
+            $user->admin = $input['user_role'];
+            $user->save();
+            return Response::json('ok');
+        }
+    }
+
 }
