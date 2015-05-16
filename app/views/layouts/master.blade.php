@@ -43,12 +43,12 @@
                         @endif
                     </ul>
                     @endif
-                    <form class="navbar-form navbar-left" role="search">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
-                        </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form>
+                    {{ Form::open(array('action' => 'ArticleController@showHome', 'class' => 'navbar-form navbar-left', 'method' => 'get', 'role' => 'search')) }}
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search" name="query">
+                    </div>
+                    {{Form::submit('Hľadaj', array('class'=>'btn btn-default'))}}
+                    {{Form::close()}}
                     <ul class="nav navbar-nav navbar-right">
                         @if(Auth::check())
                         <li class="dropdown">
@@ -67,10 +67,10 @@
         </nav>
         <div class="container-fluid">
             @if(Session::has('error'))
-                <div class="alert alert-danger" role="alert">{{ Session::get('error') }}</div>
+            <div class="alert alert-danger" role="alert">{{ Session::get('error') }}</div>
             @endif
             @if(Session::has('message'))
-                <div class="alert alert-success" role="alert">{{ Session::get('message') }}</div>
+            <div class="alert alert-success" role="alert">{{ Session::get('message') }}</div>
             @endif
             @yield('content')
         </div>    

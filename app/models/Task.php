@@ -16,6 +16,7 @@ class Task extends Eloquent {
         'type',
         'state',
         'name',
+        'points',
         'created_at',
         'updated_at'
     );
@@ -25,7 +26,8 @@ class Task extends Eloquent {
         'start' => 'required|date',
         'stop' => 'required|date|after:start',
         'type' => 'required|in:0,1',
-        'name' => 'required'
+        'name' => 'required',
+        'points' => 'integer|min:0'
     );
 
     public function scopeAfterStart($query) {

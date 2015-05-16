@@ -31,6 +31,7 @@ class QuestionController extends BaseController {
                 CorrectAnswer::whereIn('question_id', $questions->get(['id'])->toArray())->delete();
                 $questions->delete();
                 $task = Task::find($task_values['id']);
+                $task->update($task_values);
             } else {
                 $task = Task::create($task_values);
             }
@@ -84,7 +85,7 @@ class QuestionController extends BaseController {
         $users = StudentAnswer::whereIn('question_id', $questions)->distinct()->get(['user_id', 'created_at']);
         return View::make('tasks.test.solutions', array(
                     'users' => $users,
-                    'task' => Task::find($id)
+                    'task' => Task::find($id),
         ));
     }
 
@@ -143,6 +144,34 @@ class QuestionController extends BaseController {
                 $result[] = $temp;
             }
             return Response::json($result);
+        }
+    }
+
+    public function addPoints() {
+        $input = Input::all();
+        $points = Point::create($input);
+        if ($points->save()) {
+            return Redirect::action('QuestionController@getAllSolutions', [$input['task_id']])
+                            ->with('message', 'Hodnotenie bolo uložené');
+        } else {
+            return Redirect::action('QuestionController@showSolution', array(
+                        'task_id' => $input['task_id'],
+                        'user_id' => $input['user_id'],
+                    ))->with('error', 'Nepodarilo sa uložiť hodnotenie');
+        }
+    }
+
+    public function showSolution($task_id, $user_id) {
+        $task = Task::find($task_id);
+        $questions = Question::where('task_id', '=', $task_id)->get(['id'])->toArray();
+        $studentans = StudentAnswer::where('user_id', '=', $user_id)->whereIn('question_id', $questions)->get();
+        if (count($studentans) > 0) {
+            return View::make('tasks.test.show', array(
+                        'task' => $task,
+                        'disabled' => true,
+                        'teacher' => true,
+                        'user_id' => $user_id
+            ));
         }
     }
 

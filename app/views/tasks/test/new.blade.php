@@ -20,6 +20,8 @@
         var selectedQuesion;
 
         var questions = [];
+        
+        var autoId = 0;
 
         var showAddAnswer = function () {
             $('#answer').val('');
@@ -34,28 +36,57 @@
                     'type': 'checkbox',
                     'checked': param.correct
                 }).on('change', function () {
-                    questions[param.selectedQuesion].answers[param.id].correct = $(this).is(':checked');
+                    var x = 0;
+                    for(var i = 0; i < questions.length; i++){
+                        if(questions[i].id == param.selectedQuesion){
+                            x = i;
+                            break;
+                        }
+                    }
+                    questions[x].answers[param.id].correct = $(this).is(':checked');
                 })).append(function () {
                     return ' ' + param.text;
                 }));
             });
         };
+        
+        var removeQuestion = function(param){
+            var o = 0;
+            for(var i = 0; i < questions.lenght; i++){
+                if(questions[i].id == param.id){
+                    o = i;
+                    break;
+                }
+            }
+            questions.splice(o, 1);
+            param.obj.closest('li').remove();
+        }
 
         var addQuestion = function (param) {
             if (param.type == 'text') {
                 $('#questionList').append($('<li />').text(param.text).append(
                         function () {
-                            return $('<span />').attr({
+                            return $('<span />').on('click', function(){
+                                    removeQuestion({
+                                    'id': param.id,
+                                    'obj': this
+                                });
+                            }).attr({
                                 'class': 'glyphicon glyphicon-trash'
-                            });
+                            })
                         }
                 ));
             } else {
                 $('#questionList').append($('<li />').text(param.text + ' ').append(
                         function () {
-                            return $('<span />').attr({
+                            return $('<span />').on('click', function(){
+                                    removeQuestion({
+                                    'id': param.id,
+                                    'obj': this
+                                });
+                            }).attr({
                                 'class': 'glyphicon glyphicon-trash'
-                            });
+                            })
                         }
                 ).append(
                         $('<ul />').attr({
@@ -73,22 +104,31 @@
 
         $('#send').on('click', function () {
             console.log(questions);
-            $.ajax({
-                'url': "{{ action('QuestionController@postCreate') }}",
-                'dataType': 'json',
-                'data': {
-                    'name': $('#name').val(),
-                    'class_id': $('#class_id').val(),
-                    'start': $('#start').val(),
-                    'stop': $('#stop').val(),
-                    'id': $('[name=id]').val(),
-                    questions
-                },
-                'method': 'post',
-                'success': function (result) {
-                    console.log(result);
-                }
-            });
+            $('#send').removeClass('btn-danger');
+            if($('#points').val()*1 && $('#points').val()*1 >=0){
+                $.ajax({
+                    'url': "{{ action('QuestionController@postCreate') }}",
+                    'dataType': 'json',
+                    'data': {
+                        'name': $('#name').val(),
+                        'class_id': $('#class_id').val(),
+                        'start': $('#start').val(),
+                        'stop': $('#stop').val(),
+                        'id': $('[name=id]').val(),
+                        'points': $('#points').val(),
+                        questions
+                    },
+                    'method': 'post',
+                    'success': function (result) {
+                        document.location.href = document.location.href;
+                    },
+                    'error': function(){
+                        $('#send').addClass('btn-danger');
+                    }
+                });
+            }else{
+                $('#send').addClass('btn-danger');
+            }
             return false;
         });
 
@@ -103,7 +143,8 @@
 
         $('#addNewQuestion').on('click', function () {
             if ($('#question').val()) {
-                var id = questions.length;
+                var id = autoId;
+                autoId++;
                 questions.push({
                     'text': $('#question').val(),
                     'id': id,
@@ -121,8 +162,18 @@
 
         $('#addNewAnswer').on('click', function () {
             if ($('#answer').val()) {
-                var id = questions[selectedQuesion].answers.length;
-                questions[selectedQuesion].answers.push({
+                var a = 0;
+                console.log(a);
+                for(var i = 0; i < questions.length; i++){
+                    if(questions[i].id == selectedQuesion){
+                        a = i;
+                        console.log(a);
+                        break;
+                    }
+                }
+                console.log(a);
+                var id = questions[a].answers.length;
+                questions[a].answers.push({
                     'text': $('#answer').val(),
                     'id': id,
                     'correct': false
@@ -130,7 +181,7 @@
                 addAnswer({
                     'text': $('#answer').val(),
                     'id': id,
-                    'selectedQuesion': selectedQuesion
+                    'selectedQuesion': questions[a].id
                 });
                 $('#newAnswer').modal('hide');
             }
@@ -147,7 +198,8 @@
                 'method': 'post',
                 'success': function (result) {
                     result.forEach(function(val){
-                        var id = questions.length;
+                        var id = autoId;
+                        autoId++;
                         var type = val.type == 2 ? 'choice' : 'text';
                         questions.push({
                             'text': val.text,
@@ -222,6 +274,12 @@
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
         </div>
+    </div>
+</div>
+<div class="form-group">
+    <label for="points" class="col-md-2 control-label" style="text-align:left">Body</label>
+    <div class="col-md-3">
+        <input type="text" id="points" class="form-control" name="points" value="@if(isset($task)){{{ $task->points }}}@endif">
     </div>
 </div>
 <button type="button" id="add" class="btn btn-default">Nová otázka</button>

@@ -46,7 +46,7 @@
 
 @section('middle')
 <h3 style="margin-bottom: 0; text-align: center">{{{ $task->name }}}</h3>
-{{ Form::open(array('action' => 'QuestionController@save', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
+{{ Form::open(array('action' => isset($teacher) ? 'QuestionController@addPoints' : 'QuestionController@save', 'class' => 'form-horizontal', 'method' => 'post', 'role' => 'form')) }}
 <div class="form-group">
     <div class="col-md-12">
         <ol>
@@ -56,13 +56,15 @@
                     @if($question->type == Question::CHOICE)
                     @foreach(CorrectAnswer::where('question_id', '=', $question->id)->get() as $answer)
                     <div class="checkbox" style="padding: 0; min-height: 0">
-                        <label>
-                            @if(isset($disabled))
-                            <input type="checkbox" {{ count(StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0 ? 'checked' : '' }} disabled> {{{ $answer->text }}}{{ (count(StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0) ? ($answer->isCorrect() ? ' Správna odpoveď' : ' Nesprávna odpoveď') : (!$answer->isCorrect() ? ' Správna odpoveď' : ' Nesprávna odpoveď') }}
-                            @else
-                            <input type="checkbox" name="{{{ $question->id }}}[]" value="{{{ $answer->id }}}"> {{{ $answer->text }}}
-                            @endif
+                        @if(isset($disabled))
+                        <label {{ (count(StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0) ? ($answer->isCorrect() ? '' : 'class="text-danger"') : (!$answer->isCorrect() ? '' : ' class="text-danger"') }}>
+                            <input type="checkbox" {{ count(StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0 ? 'checked' : '' }} disabled> {{{ $answer->text }}}
                         </label>
+                        @else
+                        <label>
+                            <input type="checkbox" name="{{{ $question->id }}}[]" value="{{{ $answer->id }}}"> {{{ $answer->text }}}
+                        </label>
+                        @endif
                     </div>
                     @endforeach
                     @else
@@ -78,6 +80,17 @@
         </ol>
     </div>
 </div>
+@if(isset($teacher))
+<div class="form-group">
+    <label for="points" class="col-md-2 control-label" style="text-align:left">Body</label>
+    <div class="col-md-3">
+        <input type="text" id="points" class="form-control" name="points" value="{{{ Point::where('task_id', '=', $task->id)->where('user_id', '=', $user_id)->first() ? Point::where('task_id', '=', $task->id)->where('user_id', '=', $user_id)->first()->points : '' }}}">
+        <input type="hidden" class="form-control" name="task_id" value="{{ $task->id }}">
+        <input type="hidden" class="form-control" name="user_id" value="{{ $user_id }}">
+    </div>
+</div>
+{{Form::submit('Odošli', array('class'=>'btn btn-primary pull-right', 'style'=>'margin-left: 10px', 'id'=>'send'))}}
+@endif
 @if(!isset($disabled))
 {{Form::submit('Odošli', array('class'=>'btn btn-primary pull-right', 'style'=>'margin-left: 10px', 'id'=>'send'))}}
 @endif

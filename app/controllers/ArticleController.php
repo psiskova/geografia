@@ -26,6 +26,8 @@ class ArticleController extends BaseController {
             if (!$article = Article::find($input['id'])) {
                 $article = Article::create($input);
             } else {
+                $input['state'] = $article->state;
+                $input['user_id'] = $article->user_id;
                 $article->update($input);
             }
             $article->save();
@@ -51,7 +53,6 @@ class ArticleController extends BaseController {
 
     public function postPublishArticle() {
         $input = Input::all();
-//dd($input);
         $article = Article::find($input['id']);
         if (count(Review::where('article_id', '=', $input['id'])->get()) == 0) {
             return Redirect::action('ArticleController@showArticleManagement')
@@ -111,8 +112,18 @@ class ArticleController extends BaseController {
         }
     }
 
-    public function showHome() {
-        $articles = Article::accepted()->orderBy('updated_at', 'desc')->take(5)->get();
+    public function showHome($query = null) {
+        $articles = Article::accepted();
+        if (isset(Input::all()['query']) && Input::all()['query'] != '') {
+            $users = User::where('name', 'like', '%' . Input::all()['query'] . '%')
+                            ->orWhere('last_name', 'like', '%' . Input::all()['query'] . '%')->get(['id'])->toArray();
+            if (count($users) == 0) {
+                $articles = $articles->search(Input::all()['query']);
+            } else {
+                $articles = $articles->whereIn('user_id', $users);
+            }
+        }
+        $articles = $articles->orderBy('articles.updated_at', 'desc')->take(5)->get();
         return View::make('articles.show', array(
                     'articles' => $articles
         ));

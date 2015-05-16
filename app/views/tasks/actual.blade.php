@@ -25,7 +25,7 @@
                 {{ '0 / ' . $task->getObj()->points}}
                 @endif
                 @else
-                TODO
+                {{{ (Point::where('task_id', '=', $task->id)->where('user_id', '=', Auth::id())->first() ? Point::where('task_id', '=', $task->id)->where('user_id', '=', Auth::id())->first()->points : '0') . ' / '. $task->points }}}
                 @endif
             </td>
             <td>

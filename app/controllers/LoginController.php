@@ -17,8 +17,8 @@ class LoginController extends BaseController {
             return Redirect::action('ArticleController@showHome')
                             ->with('message', 'Prihlásenie prebehlo úspešne');
         }
-        return Redirect::back()
-                        ->withInput(Input::except('password'));
+        return Redirect::action('LoginController@getLogin')
+                        ->with('error', 'Nie je možné prihlásiť');
     }
 
     public function postRegister() {

@@ -11,7 +11,7 @@
   |
  */
 
-Route::get('/', 'ArticleController@showHome');
+Route::get('/{query?}', 'ArticleController@showHome');
 Route::get('/login', 'LoginController@getLogin');
 Route::post('/login', 'LoginController@postLogin');
 Route::get('/register', 'LoginController@getRegister');
@@ -84,7 +84,7 @@ Route::group(array('prefix' => 'task'), function() {
         Route::post('/create', 'HomeworkController@postCreate');
         Route::post('/getText', 'HomeworkController@getText');
         Route::post('/addPoints', 'HomeworkController@addPoints');
-        Route::get('/show/solution{id}', 'HomeworkController@showSolution');
+        Route::get('/show/solution/{id}', 'HomeworkController@showSolution');
     });
     Route::group(array('prefix' => 'tests'), function() {
         Route::post('/save', 'QuestionController@save');
@@ -92,6 +92,8 @@ Route::group(array('prefix' => 'task'), function() {
         Route::post('/create', 'QuestionController@postCreate');
         Route::get('/getAllSolutions/{id}', 'QuestionController@getAllSolutions');
         Route::post('/loadData', 'QuestionController@loadData');
+        Route::post('/addPoints', 'QuestionController@addPoints');
+        Route::get('/show/solution/{task_id}/{user_id}', 'QuestionController@showSolution');
     });
 });
 

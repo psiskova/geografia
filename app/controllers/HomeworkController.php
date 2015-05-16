@@ -12,7 +12,7 @@ class HomeworkController extends BaseController {
                     'task' => $task
         ));
     }
-    
+
     public function save() {
         $input = Input::all();
         $input['user_id'] = Auth::id();
