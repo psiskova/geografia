@@ -16,7 +16,7 @@ class StudentAnswer extends Eloquent {
     protected $rules = array(
         'user_id' => 'required|exists:users,id',
         'question_id' => 'required|exists:questions,id',
-        'answer_id' => 'exists:correctanswers,id',
+        'answer_id' => 'exists:correctAnswers,id',
     );
 
 }
