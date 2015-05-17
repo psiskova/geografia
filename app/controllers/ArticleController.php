@@ -112,7 +112,7 @@ class ArticleController extends BaseController {
         }
     }
 
-    public function showHome($query = null) {
+    public function showHome() {
         $articles = Article::accepted();
         if (isset(Input::all()['query']) && Input::all()['query'] != '') {
             $users = User::where('name', 'like', '%' . Input::all()['query'] . '%')

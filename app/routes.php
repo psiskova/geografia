@@ -11,12 +11,15 @@
   |
  */
 
-Route::get('/{query?}', 'ArticleController@showHome');
-Route::get('/login', 'LoginController@getLogin');
-Route::post('/login', 'LoginController@postLogin');
-Route::get('/register', 'LoginController@getRegister');
-Route::post('/register', 'LoginController@postRegister');
-Route::get('/logout', 'LoginController@getLogout');
+Route::get('/', 'ArticleController@showHome');
+
+Route::group(array('prefix' => 'login'), function() {
+    Route::get('login', 'LoginController@getLogin');
+    Route::post('login', 'LoginController@postLogin');
+    Route::get('register', 'LoginController@getRegister');
+    Route::post('register', 'LoginController@postRegister');
+    Route::get('logout', 'LoginController@getLogout');
+});
 
 Route::group(array('prefix' => 'section'), function() {
     Route::get('/{id}', 'ArticleController@showSection');
