@@ -118,7 +118,11 @@ class ArticleController extends BaseController {
             $users = User::where('name', 'like', '%' . Input::all()['query'] . '%')
                             ->orWhere('last_name', 'like', '%' . Input::all()['query'] . '%')->get(['id'])->toArray();
             if (count($users) == 0) {
-                $articles = $articles->search(Input::all()['query']);
+                try {
+                    $articles = $articles->search(Input::all()['query'])->get();
+                } catch (Exception $e) {
+                    $articles = Article::accepted()->where('caption', 'like', '%' . Input::all()['query'] . '%');
+                }
             } else {
                 $articles = $articles->whereIn('user_id', $users);
             }
