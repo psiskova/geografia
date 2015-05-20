@@ -93,7 +93,9 @@
     </div>
 </div>
 @if(!isset($disabled))
+@if(!$task->isAfter())
 {{Form::submit('Odošli', array('class'=>'btn btn-primary pull-right', 'style'=>'margin-left: 10px', 'id'=>'send'))}}
+@endif
 @endif
 {{ Form::close() }}
 @stop

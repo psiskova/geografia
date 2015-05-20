@@ -15,5 +15,9 @@ class Student extends Eloquent {
         'user_id' => 'required|exists:users,id',
         'class_id' => 'required|exists:classes,id',
     );
-    
+
+    public function classs() {
+        return $this->hasOne('Classs', 'id', 'class_id');
+    }
+
 }

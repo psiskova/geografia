@@ -5,7 +5,7 @@ class TaskController extends BaseController {
     public function show($id) {
         if (!$task = Task::find($id)) {
             return Redirect::action('ArticleController@showHome')
-                            ->with('error', 'Sorry bro');
+                            ->with('error', '');
         }
         $obj = $task->getObj();
         if ($task->isHomework()) {
@@ -36,14 +36,19 @@ class TaskController extends BaseController {
     }
 
     public function showActual() {
-        $tasks = Task::afterStart()->beforeStop()->orderBy('updated_at', 'desc')->get();
+        $tasks = Task::afterStart()->beforeStop()->orderBy('stop', 'asc')->get();
         return View::make('tasks.actual', array(
                     'tasks' => $tasks
         ));
     }
 
     public function showAll() {
-        $tasks = Task::orderBy('updated_at', 'desc')->get();
+        if (Auth::user()->isStudent()) {
+            $class = Student::where('user_id', '=', Auth::id())->first()->classs;
+            $tasks = Task::where('class_id', '=', $class->id)->afterStart()->orderBy('stop', 'asc')->get();
+        } else {
+            $tasks = Task::orderBy('stop', 'desc')->get();
+        }
         return View::make('tasks.all', array(
                     'tasks' => $tasks
         ));

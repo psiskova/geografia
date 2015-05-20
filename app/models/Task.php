@@ -62,9 +62,13 @@ class Task extends Eloquent {
                 return NULL;
         };
     }
-    
-    public function classs(){
+
+    public function classs() {
         return $this->hasOne('Classs', 'id', 'class_id');
+    }
+
+    public function isAfter() {
+        return $this->stop < Carbon::now();
     }
 
 }

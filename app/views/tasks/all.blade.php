@@ -12,7 +12,7 @@
     </thead>
     <tbody>
         @foreach($tasks as $task)
-        <tr>
+        <tr class="{{ $task->isAfter() ? 'danger' : '' }}">
             <td>
                 {{ HTML::linkAction('TaskController@show', $task->name, array('id' => $task->id), array()) }}
             </td>
