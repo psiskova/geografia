@@ -57,8 +57,8 @@
                     @foreach(CorrectAnswer::where('question_id', '=', $question->id)->get() as $answer)
                     <div class="checkbox" style="padding: 0; min-height: 0">
                         @if(isset($disabled))
-                        <label {{ (count(StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0) ? ($answer->isCorrect() ? '' : 'class="text-danger"') : (!$answer->isCorrect() ? '' : ' class="text-danger"') }}>
-                            <input type="checkbox" {{ count(StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0 ? 'checked' : '' }} disabled> {{{ $answer->text }}}
+                        <label {{ (count(StudentAnswer::where('user_id', '=', isset($user_id) ? $user_id : Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0) ? ($answer->isCorrect() ? '' : 'class="text-danger"') : (!$answer->isCorrect() ? '' : ' class="text-danger"') }}>
+                            <input type="checkbox" {{ count(StudentAnswer::where('user_id', '=', isset($user_id) ? $user_id : Auth::id())->where('question_id', '=', $question->id)->where('answer_id', '=', $answer->id)->get()) > 0 ? 'checked' : '' }} disabled> {{{ $answer->text }}}
                         </label>
                         @else
                         <label>
@@ -69,7 +69,7 @@
                     @endforeach
                     @else
                     @if(isset($disabled))
-                    {{{ StudentAnswer::where('user_id', '=', Auth::id())->where('question_id', '=', $question->id)->first()->text }}}
+                    {{{ StudentAnswer::where('user_id', '=', isset($user_id) ? $user_id : Auth::id())->where('question_id', '=', $question->id)->first()->text }}}
                     @else
                     <textarea class="form-control" rows="5"  name="{{{ $question->id }}}"></textarea>
                     @endif

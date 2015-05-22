@@ -36,7 +36,12 @@ class TaskController extends BaseController {
     }
 
     public function showActual() {
-        $tasks = Task::afterStart()->beforeStop()->orderBy('stop', 'asc')->get();
+        if (Auth::user()->isStudent()) {
+            $class = Student::where('user_id', '=', Auth::id())->first()->classs;
+            $tasks = Task::where('class_id', '=', $class->id)->afterStart()->orderBy('stop', 'asc')->get();
+        } else {
+            $tasks = Task::afterStart()->beforeStop()->orderBy('stop', 'asc')->get();
+        }
         return View::make('tasks.actual', array(
                     'tasks' => $tasks
         ));
@@ -47,7 +52,7 @@ class TaskController extends BaseController {
             $class = Student::where('user_id', '=', Auth::id())->first()->classs;
             $tasks = Task::where('class_id', '=', $class->id)->afterStart()->orderBy('stop', 'asc')->get();
         } else {
-            $tasks = Task::orderBy('stop', 'desc')->get();
+            $tasks = Task::orderBy('stop', 'asc')->get();
         }
         return View::make('tasks.all', array(
                     'tasks' => $tasks

@@ -29,7 +29,7 @@
                 </a>
             </td>
             <td>
-                {{{ (Point::where('task_id', '=', $task->id)->where('user_id', '=', $user->user_id)->first()->points) .  ' / ' . $task->points }}}
+                {{{ (Point::where('task_id', '=', $task->id)->where('user_id', '=', $user->user_id)->first() ? Point::where('task_id', '=', $task->id)->where('user_id', '=', $user->user_id)->first()->points : '0') . ' / '. $task->points }}}
             </td>
             <td>
                 {{{ Carbon::parse($user->created_at)->format('d.m.Y H:m') }}}
